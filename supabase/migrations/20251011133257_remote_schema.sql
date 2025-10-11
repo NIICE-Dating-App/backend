@@ -1,36 +1,35 @@
-create type "public"."looking_friend_enum" as enum ('new_friends_nearby', 'workout_fitness_buddy', 'travel_companions', 'activity_hobby_partners', 'casual_hangouts', 'professional_networking', 'close_friendships');
+alter table "public"."lifestyle" add column "communities" text[];
 
-create type "public"."value_date_enum" as enum ('honesty', 'kindness', 'sense_of_humor', 'good_communication', 'ambition', 'loyalty', 'emotional_intelligence', 'adventurous_spirit', 'intelligence', 'affectionate', 'family_oriented', 'open_mindedness', 'active_lifestyle', 'supportive', 'authenticity', 'similar_values', 'confidence', 'romantic', 'financial_stability', 'shared_interests');
+alter table "public"."lifestyle" add column "created_at" timestamp with time zone not null default timezone('utc'::text, now());
 
-drop trigger if exists "trg_enforce_hobby_count" on "public"."user_hobbies";
+alter table "public"."lifestyle" add column "pets" text;
 
-drop trigger if exists "trg_enforce_photo_count" on "public"."user_photos";
+alter table "public"."lifestyle" add column "politics" text;
 
-alter table "public"."lifestyle" add column "communication" text;
+alter table "public"."lifestyle" add column "religion" text;
 
-alter table "public"."lifestyle" add column "love_language" text;
+alter table "public"."lifestyle" add column "updated_at" timestamp with time zone not null default timezone('utc'::text, now());
 
-alter table "public"."lifestyle" add column "workout" text;
+alter table "public"."profiles" drop column "politics";
 
-alter table "public"."lifestyle" add column "zodiac" text;
+alter table "public"."profiles" drop column "religion";
 
-alter table "public"."user_modes" drop column "brings_you";
+alter table "public"."profiles" add column "prompt_answers" jsonb default '[]'::jsonb;
 
-alter table "public"."user_modes" drop column "interested_in";
-
-alter table "public"."user_modes" add column "looking_for_date" looking_enum[];
-
-alter table "public"."user_modes" add column "value_date" value_date_enum[];
-
-alter table "public"."user_modes" add column "value_friend" friend_value_enum[];
-
---alter table "public"."user_modes" alter column "looking_for_friend" set data type looking_friend_enum[] using "looking_for_friend"::looking_friend_enum[];
-
-alter table public.user_modes drop column if exists looking_for_friend;
-alter table public.user_modes add column looking_for_friend looking_friend_enum[];
-
+CREATE INDEX idx_profiles_prompt_answers ON public.profiles USING gin (prompt_answers);
 
 set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.handle_lifestyle_updated_at()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+  NEW.updated_at = timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$function$
+;
 
 CREATE OR REPLACE FUNCTION public.check_user_exists(user_email text)
  RETURNS boolean
@@ -161,6 +160,8 @@ BEGIN
 END;
 $function$
 ;
+
+CREATE TRIGGER lifestyle_updated_at_trigger BEFORE UPDATE ON public.lifestyle FOR EACH ROW EXECUTE FUNCTION handle_lifestyle_updated_at();
 
 
 

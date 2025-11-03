@@ -336,12 +336,16 @@ $function$
 
 -- -------------------------------------------------------------------
 
-create policy "match_requests: create request"
+create policy "match_requests: requester cancel"
 on "public"."match_requests"
 as permissive
-for insert
+for delete
 to authenticated
-with check (((requester_id = auth.uid()) AND (requester_id <> target_id) AND (status = 'pending'::match_status_enum__old_version_to_be_dropped)));
+using (
+  (auth.uid() = requester_id)
+  AND (status::text = 'pending')
+);
+
 
 create policy "match_requests: read own"
 on "public"."match_requests"
@@ -355,8 +359,15 @@ on "public"."match_requests"
 as permissive
 for update
 to authenticated
-using (((target_id = auth.uid()) AND (status = 'pending'::match_status_enum__old_version_to_be_dropped)))
-with check (((target_id = auth.uid()) AND (status = ANY (ARRAY['accepted'::match_status_enum__old_version_to_be_dropped, 'denied'::match_status_enum__old_version_to_be_dropped]))));
+using (
+  (target_id = auth.uid())
+  AND (status::text = 'pending')
+)
+with check (
+  (target_id = auth.uid())
+  AND (status::text = ANY (ARRAY['accepted','denied','rejected']))
+);
+
 
 create policy "profiles: self read"
 on "public"."profiles"

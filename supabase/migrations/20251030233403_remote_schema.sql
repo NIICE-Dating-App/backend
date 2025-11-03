@@ -33,11 +33,11 @@ create table "public"."frames" (
 
 alter table "public"."frames" enable row level security;
 
-alter table "public"."match_requests" alter column "status" set default 'pending'::match_status_enum;
+--alter table "public"."match_requests" alter column "status" set default 'pending'::match_status_enum;
 
-alter table "public"."match_requests" alter column "status" set data type match_status_enum using "status"::text::match_status_enum;
+--alter table "public"."match_requests" alter column "status" set data type match_status_enum using "status"::text::match_status_enum;
 
-drop type "public"."match_status_enum__old_version_to_be_dropped";
+--drop type "public"."match_status_enum__old_version_to_be_dropped";
 
 CREATE INDEX blocks_blocked_blocker_idx ON public.blocks USING btree (blocked_id, blocker_id);
 
@@ -531,7 +531,7 @@ on "public"."match_requests"
 as permissive
 for insert
 to authenticated
-with check (((requester_id = auth.uid()) AND (requester_id <> target_id) AND (status = 'pending'::match_status_enum)));
+with check (((requester_id = auth.uid()) AND (requester_id <> target_id) AND (status::text = 'pending')));
 
 
 create policy "match_requests: requester cancel"
@@ -539,16 +539,25 @@ on "public"."match_requests"
 as permissive
 for delete
 to authenticated
-using (((auth.uid() = requester_id) AND (status = 'pending'::match_status_enum)));
-
+using (
+  (auth.uid() = requester_id)
+  AND (status::text = 'pending')
+);
 
 create policy "match_requests: respond"
 on "public"."match_requests"
 as permissive
 for update
 to authenticated
-using (((target_id = auth.uid()) AND (status = 'pending'::match_status_enum)))
-with check (((target_id = auth.uid()) AND (status = ANY (ARRAY['accepted'::match_status_enum, 'rejected'::match_status_enum]))));
+using (
+  (target_id = auth.uid())
+  AND (status::text = 'pending')
+)
+with check (
+  (target_id = auth.uid())
+  AND (status::text = ANY (ARRAY['accepted','denied','rejected']))
+);
+
 
 
 CREATE TRIGGER trg_frames_after_insert_set_pointer AFTER INSERT ON public.frames FOR EACH ROW EXECUTE FUNCTION frames_after_insert_set_pointer();

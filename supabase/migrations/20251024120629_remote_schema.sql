@@ -241,12 +241,17 @@ to authenticated
 using (((auth.uid() = requester_id) OR (auth.uid() = target_id)));
 
 
-create policy "match_requests: requester cancel"
+create policy "match_requests: create request"
 on "public"."match_requests"
 as permissive
-for delete
+for insert
 to authenticated
-using (((auth.uid() = requester_id) AND (status = 'pending'::match_status_enum)));
+with check (
+  (requester_id = auth.uid())
+  AND (requester_id <> target_id)
+  AND (status::text = 'pending')
+);
+
 
 
 create policy "match_requests: requester insert"

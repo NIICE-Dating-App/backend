@@ -92,11 +92,11 @@ alter table "public"."user_hobbies" drop constraint "user_hobbies_hobby_id_fkey"
 
 alter table "public"."user_hobbies" drop constraint "user_hobbies_user_id_fkey";
 
-alter table "public"."match_requests" alter column "status" set default 'pending'::match_status_enum;
+-- alter table "public"."match_requests" alter column "status" set default 'pending'::match_status_enum;
 
-alter table "public"."match_requests" alter column "status" set data type match_status_enum using "status"::text::match_status_enum;
+-- alter table "public"."match_requests" alter column "status" set data type match_status_enum using "status"::text::match_status_enum;
 
-drop type "public"."match_status_enum__old_version_to_be_dropped";
+-- drop type "public"."match_status_enum__old_version_to_be_dropped";
 
 CREATE UNIQUE INDEX lifestyle_user_id_unique ON public.lifestyle USING btree (user_id);
 
@@ -501,29 +501,29 @@ using ((auth.uid() = user_id))
 with check ((auth.uid() = user_id));
 
 
-create policy "match_requests: create request"
-on "public"."match_requests"
-as permissive
-for insert
-to authenticated
-with check (((requester_id = auth.uid()) AND (requester_id <> target_id) AND (status = 'pending'::match_status_enum)));
+--create policy "match_requests: create request"
+--on "public"."match_requests"
+--as permissive
+--for insert
+--to authenticated
+-- with check (((requester_id = auth.uid()) AND (requester_id <> target_id) AND (status = 'pending'::match_status_enum)));
 
 
-create policy "match_requests: requester cancel"
-on "public"."match_requests"
-as permissive
-for delete
-to authenticated
-using (((auth.uid() = requester_id) AND (status = 'pending'::match_status_enum)));
+--create policy "match_requests: requester cancel"
+--on "public"."match_requests"
+--as permissive
+--for delete
+--to authenticated
+-- using (((auth.uid() = requester_id) AND (status = 'pending'::match_status_enum)));
 
 
-create policy "match_requests: respond"
-on "public"."match_requests"
-as permissive
-for update
-to authenticated
-using (((target_id = auth.uid()) AND (status = 'pending'::match_status_enum)))
-with check (((target_id = auth.uid()) AND (status = ANY (ARRAY['accepted'::match_status_enum, 'rejected'::match_status_enum]))));
+-- create policy "match_requests: respond"
+--on "public"."match_requests"
+--as permissive
+--for update
+--to authenticated
+-- using (((target_id = auth.uid()) AND (status = 'pending'::match_status_enum)))
+--with check (((target_id = auth.uid()) AND (status = ANY (ARRAY['accepted'::match_status_enum, 'rejected'::match_status_enum]))));
 
 
 

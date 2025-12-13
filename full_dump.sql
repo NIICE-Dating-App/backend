@@ -59,30 +59,38 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 
 
 
-CREATE TYPE "public"."brings_enum" AS ENUM (
-    'date',
-    'friends',
-    'date_and_friends'
+CREATE TYPE "public"."community_category_enum" AS ENUM (
+    'tech',
+    'sports',
+    'music',
+    'art',
+    'food',
+    'travel',
+    'fitness',
+    'gaming',
+    'books',
+    'movies',
+    'photography',
+    'fashion',
+    'business',
+    'education',
+    'health',
+    'lifestyle',
+    'other'
 );
 
 
-ALTER TYPE "public"."brings_enum" OWNER TO "postgres";
-
-
-CREATE TYPE "public"."connection_visibility_enum" AS ENUM (
-    'full_profile',
-    'blind'
-);
-
-
-ALTER TYPE "public"."connection_visibility_enum" OWNER TO "postgres";
+ALTER TYPE "public"."community_category_enum" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."conversation_type_enum" AS ENUM (
     'dating_match',
     'blind_date',
     'friend_match',
-    'event_group'
+    'event_group',
+    'group_chat',
+    'community_chat',
+    'match'
 );
 
 
@@ -130,31 +138,27 @@ CREATE TYPE "public"."event_status_enum" AS ENUM (
 ALTER TYPE "public"."event_status_enum" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."friend_value_enum" AS ENUM (
-    'loyalty',
-    'trustworthy',
-    'good_listener',
-    'sense_of_humor',
-    'supportive',
-    'non_judgmental',
-    'honest',
-    'reliable',
-    'fun_to_be_around',
-    'authentic',
-    'understanding',
-    'shared_interests',
-    'deep_conversations',
-    'adventurous',
-    'positive_energy',
-    'low_maintenance',
-    'makes_time_for_me',
-    'encouraging',
-    'respectful_of_boundaries',
-    'growth_minded'
+CREATE TYPE "public"."event_type_enum" AS ENUM (
+    'public',
+    'public_application',
+    'private',
+    'invite_only',
+    'group_event',
+    'community_event'
 );
 
 
-ALTER TYPE "public"."friend_value_enum" OWNER TO "postgres";
+ALTER TYPE "public"."event_type_enum" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."event_visibility_enum" AS ENUM (
+    'public',
+    'private',
+    'invite_only'
+);
+
+
+ALTER TYPE "public"."event_visibility_enum" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."gender_enum" AS ENUM (
@@ -178,7 +182,7 @@ CREATE TYPE "public"."gender_filter_enum" AS ENUM (
 ALTER TYPE "public"."gender_filter_enum" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."looking_enum" AS ENUM (
+CREATE TYPE "public"."looking_for_enum" AS ENUM (
     'long_term_relationship',
     'life_partner',
     'casual_dates',
@@ -186,34 +190,46 @@ CREATE TYPE "public"."looking_enum" AS ENUM (
     'marriage',
     'short_term_relationship',
     'new_friends',
-    'figuring_it_out'
-);
-
-
-ALTER TYPE "public"."looking_enum" OWNER TO "postgres";
-
-
-CREATE TYPE "public"."looking_friend_enum" AS ENUM (
-    'new_friends_nearby',
+    'figuring_it_out',
     'workout_fitness_buddy',
     'travel_companions',
     'activity_hobby_partners',
     'casual_hangouts',
     'professional_networking',
-    'close_friendships'
+    'close_friendships',
+    'event_buddies',
+    'group_activities',
+    'local_exploration',
+    'adventure_partners',
+    'cultural_events',
+    'sports_events',
+    'food_and_drinks',
+    'nightlife_partners',
+    'outdoor_activities',
+    'learning_together'
 );
 
 
-ALTER TYPE "public"."looking_friend_enum" OWNER TO "postgres";
+ALTER TYPE "public"."looking_for_enum" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."match_mode_enum" AS ENUM (
-    'dating',
-    'friend'
+COMMENT ON TYPE "public"."looking_for_enum" IS 'User preferences for what they are looking for - includes dating, friendship, and event/activity options';
+
+
+
+CREATE TYPE "public"."marital_status_enum" AS ENUM (
+    'single',
+    'in_relationship',
+    'engaged',
+    'married',
+    'divorced',
+    'widowed',
+    'separated',
+    'its_complicated'
 );
 
 
-ALTER TYPE "public"."match_mode_enum" OWNER TO "postgres";
+ALTER TYPE "public"."marital_status_enum" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."match_status_enum" AS ENUM (
@@ -236,6 +252,31 @@ CREATE TYPE "public"."media_type" AS ENUM (
 ALTER TYPE "public"."media_type" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."member_role_enum" AS ENUM (
+    'owner',
+    'admin',
+    'moderator',
+    'member'
+);
+
+
+ALTER TYPE "public"."member_role_enum" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."message_type_enum" AS ENUM (
+    'text',
+    'image',
+    'voice',
+    'system',
+    'reaction',
+    'location',
+    'deleted'
+);
+
+
+ALTER TYPE "public"."message_type_enum" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."orientation_enum" AS ENUM (
     'straight',
     'gay',
@@ -256,17 +297,16 @@ CREATE TYPE "public"."orientation_enum" AS ENUM (
 ALTER TYPE "public"."orientation_enum" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."place_role_enum" AS ENUM (
-    'none',
-    'requester',
-    'target'
+CREATE TYPE "public"."profile_visibility_enum" AS ENUM (
+    'public',
+    'private'
 );
 
 
-ALTER TYPE "public"."place_role_enum" OWNER TO "postgres";
+ALTER TYPE "public"."profile_visibility_enum" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."value_date_enum" AS ENUM (
+CREATE TYPE "public"."value_enum" AS ENUM (
     'honesty',
     'kindness',
     'sense_of_humor',
@@ -286,11 +326,636 @@ CREATE TYPE "public"."value_date_enum" AS ENUM (
     'confidence',
     'romantic',
     'financial_stability',
-    'shared_interests'
+    'shared_interests',
+    'trustworthy',
+    'good_listener',
+    'non_judgmental',
+    'reliable',
+    'fun_to_be_around',
+    'understanding',
+    'deep_conversations',
+    'positive_energy',
+    'low_maintenance',
+    'makes_time_for_me',
+    'encouraging',
+    'respectful_of_boundaries',
+    'growth_minded'
 );
 
 
-ALTER TYPE "public"."value_date_enum" OWNER TO "postgres";
+ALTER TYPE "public"."value_enum" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."vehicle_enum" AS ENUM (
+    'car',
+    'motorcycle',
+    'bicycle',
+    'scooter',
+    'boat',
+    'plane',
+    'none'
+);
+
+
+ALTER TYPE "public"."vehicle_enum" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."accept_event_invite"("p_invite_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_event_id UUID;
+    v_conversation_id UUID;
+BEGIN
+    -- Verify invite belongs to user and is pending
+    SELECT event_id INTO v_event_id
+    FROM event_invites
+    WHERE id = p_invite_id 
+    AND invited_user_id = auth.uid()
+    AND status = 'pending';
+    
+    IF v_event_id IS NULL THEN
+        RAISE EXCEPTION 'Invite not found or already processed';
+    END IF;
+    
+    -- Update invite status (this will trigger add_invited_user_to_event_chat)
+    UPDATE event_invites
+    SET status = 'accepted'
+    WHERE id = p_invite_id;
+    
+    RETURN true;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."accept_event_invite"("p_invite_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."accept_group_invite"("p_invite_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_invite RECORD;
+BEGIN
+    -- Get invite and verify ownership
+    SELECT * INTO v_invite
+    FROM group_invites
+    WHERE id = p_invite_id
+    AND invited_user_id = auth.uid()
+    AND status = 'pending';
+    
+    IF v_invite IS NULL THEN
+        RAISE EXCEPTION 'Invite not found or already processed';
+    END IF;
+    
+    -- Update invite status (trigger will handle adding to group)
+    UPDATE group_invites
+    SET status = 'accepted'
+    WHERE id = p_invite_id;
+    
+    RETURN true;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."accept_group_invite"("p_invite_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."add_approved_applicant_to_event_chat"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+BEGIN
+    -- Only proceed if status changed to 'approved'
+    IF NEW.status = 'approved' AND (OLD.status IS NULL OR OLD.status != 'approved') THEN
+        -- Find the event group chat
+        SELECT id INTO v_conversation_id
+        FROM conversations
+        WHERE event_id = NEW.event_id AND type = 'event_group';
+        
+        IF v_conversation_id IS NOT NULL THEN
+            -- Add applicant to conversation
+            INSERT INTO conversation_members (conversation_id, user_id)
+            VALUES (v_conversation_id, NEW.applicant_id)
+            ON CONFLICT DO NOTHING;
+        END IF;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."add_approved_applicant_to_event_chat"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."add_invited_user_to_event_chat"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+BEGIN
+    -- Only proceed if status changed to 'accepted'
+    IF NEW.status = 'accepted' AND (OLD.status IS NULL OR OLD.status != 'accepted') THEN
+        -- Find the event group chat
+        SELECT id INTO v_conversation_id
+        FROM conversations
+        WHERE event_id = NEW.event_id AND type = 'event_group';
+        
+        IF v_conversation_id IS NOT NULL AND NEW.invited_user_id IS NOT NULL THEN
+            -- Add invited user to conversation
+            INSERT INTO conversation_members (conversation_id, user_id)
+            VALUES (v_conversation_id, NEW.invited_user_id)
+            ON CONFLICT DO NOTHING;
+            
+            -- Also create an approved application for them
+            INSERT INTO event_applications (event_id, applicant_id, status)
+            VALUES (NEW.event_id, NEW.invited_user_id, 'approved')
+            ON CONFLICT (event_id, applicant_id) 
+            DO UPDATE SET status = 'approved';
+        END IF;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."add_invited_user_to_event_chat"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."apply_to_event"("p_event_id" "uuid", "p_message" "text" DEFAULT NULL::"text") RETURNS json
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+  v_user_id UUID;
+  v_event RECORD;
+  v_existing RECORD;
+  v_new_status event_application_status_enum;
+  v_result JSON;
+BEGIN
+  -- Get current user
+  v_user_id := auth.uid();
+  IF v_user_id IS NULL THEN
+    RETURN json_build_object('success', false, 'error', 'Not authenticated');
+  END IF;
+  
+  -- Get event details
+  SELECT id, host_id, event_type, status, capacity
+  INTO v_event
+  FROM events
+  WHERE id = p_event_id;
+  
+  IF v_event IS NULL THEN
+    RETURN json_build_object('success', false, 'error', 'Event not found');
+  END IF;
+  
+  IF v_event.status != 'active' THEN
+    RETURN json_build_object('success', false, 'error', 'Event is not active');
+  END IF;
+  
+  -- Check if user is the host
+  IF v_event.host_id = v_user_id THEN
+    RETURN json_build_object('success', false, 'error', 'You cannot apply to your own event');
+  END IF;
+  
+  -- Check for existing application
+  SELECT id, status INTO v_existing
+  FROM event_applications
+  WHERE event_id = p_event_id AND applicant_id = v_user_id;
+  
+  IF v_existing IS NOT NULL THEN
+    RETURN json_build_object(
+      'success', false, 
+      'error', 'You have already applied to this event',
+      'status', v_existing.status
+    );
+  END IF;
+  
+  -- Check if event is at capacity (for approved applications)
+  IF v_event.event_type IN ('public', 'group_event', 'community_event') THEN
+    DECLARE
+      v_current_count INT;
+    BEGIN
+      SELECT COUNT(*) INTO v_current_count
+      FROM event_applications
+      WHERE event_id = p_event_id AND status = 'approved';
+      
+      IF v_current_count >= v_event.capacity THEN
+        RETURN json_build_object('success', false, 'error', 'Event is at full capacity');
+      END IF;
+    END;
+  END IF;
+  
+  -- Determine status based on event type
+  IF v_event.event_type IN ('public', 'group_event', 'community_event') THEN
+    v_new_status := 'approved';
+  ELSE
+    v_new_status := 'pending';
+  END IF;
+  
+  -- Insert application
+  INSERT INTO event_applications (event_id, applicant_id, status, message)
+  VALUES (p_event_id, v_user_id, v_new_status, p_message);
+  
+  -- Return success
+  IF v_new_status = 'approved' THEN
+    RETURN json_build_object('success', true, 'message', 'You have joined the event', 'status', 'approved');
+  ELSE
+    RETURN json_build_object('success', true, 'message', 'Your application has been sent', 'status', 'pending');
+  END IF;
+  
+EXCEPTION
+  WHEN unique_violation THEN
+    RETURN json_build_object('success', false, 'error', 'You have already applied to this event');
+  WHEN OTHERS THEN
+    RETURN json_build_object('success', false, 'error', SQLERRM);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."apply_to_event"("p_event_id" "uuid", "p_message" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."apply_to_event"("p_event_id" "uuid", "p_message" "text") IS 'Apply or join an event. Uses SECURITY DEFINER to bypass RLS recursion issues.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."are_in_same_community"("p_user1" "uuid", "p_user2" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+    SELECT EXISTS (
+        SELECT 1 
+        FROM community_members cm1
+        JOIN community_members cm2 ON cm1.community_id = cm2.community_id
+        WHERE cm1.user_id = p_user1
+        AND cm2.user_id = p_user2
+        AND cm1.user_id != cm2.user_id
+    );
+$$;
+
+
+ALTER FUNCTION "public"."are_in_same_community"("p_user1" "uuid", "p_user2" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."are_in_same_group"("p_user1" "uuid", "p_user2" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+    SELECT EXISTS (
+        SELECT 1 
+        FROM group_members gm1
+        JOIN group_members gm2 ON gm1.group_id = gm2.group_id
+        WHERE gm1.user_id = p_user1
+        AND gm2.user_id = p_user2
+        AND gm1.user_id != gm2.user_id
+    );
+$$;
+
+
+ALTER FUNCTION "public"."are_in_same_group"("p_user1" "uuid", "p_user2" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."can_invite_to_event"("p_user_id" "uuid", "p_event_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_event RECORD;
+    v_is_approved BOOLEAN;
+BEGIN
+    SELECT * INTO v_event
+    FROM events
+    WHERE id = p_event_id;
+    
+    IF NOT FOUND THEN
+        RETURN false;
+    END IF;
+    
+    -- Host can always invite
+    IF v_event.host_id = p_user_id THEN
+        RETURN true;
+    END IF;
+    
+    -- Only invite_only events have member invite capability
+    IF v_event.event_type != 'invite_only' THEN
+        RETURN false;
+    END IF;
+    
+    -- Check if allow_member_invites is enabled
+    IF NOT v_event.allow_member_invites THEN
+        RETURN false;
+    END IF;
+    
+    -- Check if user is an approved attendee
+    v_is_approved := EXISTS (
+        SELECT 1 FROM event_applications ea
+        WHERE ea.event_id = p_event_id
+        AND ea.applicant_id = p_user_id
+        AND ea.status = 'approved'
+    );
+    
+    RETURN v_is_approved;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."can_invite_to_event"("p_user_id" "uuid", "p_event_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."can_join_event"("p_user_id" "uuid", "p_event_id" "uuid") RETURNS TABLE("can_join" boolean, "join_method" "text", "reason" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_event RECORD;
+    v_is_member BOOLEAN;
+    v_is_invited BOOLEAN;
+    v_has_application BOOLEAN;
+    v_application_status event_application_status_enum;
+    v_capacity_remaining INTEGER;
+BEGIN
+    -- Get event details
+    SELECT e.*, 
+           (SELECT COUNT(*) FROM event_applications ea 
+            WHERE ea.event_id = e.id AND ea.status = 'approved') as current_attendees
+    INTO v_event
+    FROM events e
+    WHERE e.id = p_event_id;
+    
+    IF NOT FOUND THEN
+        RETURN QUERY SELECT false, 'none'::TEXT, 'Event not found'::TEXT;
+        RETURN;
+    END IF;
+    
+    -- Check if event is active and not ended
+    IF v_event.status != 'active' OR v_event.time_end < now() THEN
+        RETURN QUERY SELECT false, 'none'::TEXT, 'Event is not active or has ended'::TEXT;
+        RETURN;
+    END IF;
+    
+    -- Check capacity
+    v_capacity_remaining := v_event.capacity - v_event.current_attendees;
+    IF v_capacity_remaining <= 0 THEN
+        RETURN QUERY SELECT false, 'none'::TEXT, 'Event is at full capacity'::TEXT;
+        RETURN;
+    END IF;
+    
+    -- Check if already has application
+    SELECT status INTO v_application_status
+    FROM event_applications
+    WHERE event_id = p_event_id AND applicant_id = p_user_id;
+    
+    IF v_application_status = 'approved' THEN
+        RETURN QUERY SELECT false, 'none'::TEXT, 'Already joined this event'::TEXT;
+        RETURN;
+    END IF;
+    
+    IF v_application_status = 'pending' THEN
+        RETURN QUERY SELECT false, 'none'::TEXT, 'Application pending'::TEXT;
+        RETURN;
+    END IF;
+    
+    -- Check block status
+    IF have_blocked_each_other(p_user_id, v_event.host_id) THEN
+        RETURN QUERY SELECT false, 'none'::TEXT, 'Cannot join this event'::TEXT;
+        RETURN;
+    END IF;
+    
+    -- Type-specific logic
+    CASE v_event.event_type
+        -- Public: direct join
+        WHEN 'public' THEN
+            RETURN QUERY SELECT true, 'direct'::TEXT, 'Can join directly'::TEXT;
+            
+        -- Public with application: needs approval
+        WHEN 'public_application' THEN
+            RETURN QUERY SELECT true, 'application'::TEXT, 'Application required'::TEXT;
+            
+        -- Private: needs approval
+        WHEN 'private' THEN
+            RETURN QUERY SELECT true, 'application'::TEXT, 'Application required'::TEXT;
+            
+        -- Invite only: must be invited
+        WHEN 'invite_only' THEN
+            v_is_invited := EXISTS (
+                SELECT 1 FROM event_invites ei
+                WHERE ei.event_id = p_event_id
+                AND ei.invited_user_id = p_user_id
+                AND ei.status = 'pending'
+            );
+            
+            IF v_is_invited THEN
+                RETURN QUERY SELECT true, 'invite_accept'::TEXT, 'Accept invite to join'::TEXT;
+            ELSE
+                RETURN QUERY SELECT false, 'none'::TEXT, 'Invite required'::TEXT;
+            END IF;
+            
+        -- Group event: must be group member
+        WHEN 'group_event' THEN
+            v_is_member := EXISTS (
+                SELECT 1 FROM group_members gm
+                WHERE gm.group_id = v_event.group_id
+                AND gm.user_id = p_user_id
+            );
+            
+            IF v_is_member THEN
+                RETURN QUERY SELECT true, 'direct'::TEXT, 'Can join as group member'::TEXT;
+            ELSE
+                RETURN QUERY SELECT false, 'none'::TEXT, 'Must be a group member'::TEXT;
+            END IF;
+            
+        -- Community event: must be community member
+        WHEN 'community_event' THEN
+            v_is_member := EXISTS (
+                SELECT 1 FROM community_members cm
+                WHERE cm.community_id = v_event.community_id
+                AND cm.user_id = p_user_id
+            );
+            
+            IF v_is_member THEN
+                RETURN QUERY SELECT true, 'direct'::TEXT, 'Can join as community member'::TEXT;
+            ELSE
+                RETURN QUERY SELECT false, 'none'::TEXT, 'Must be a community member'::TEXT;
+            END IF;
+            
+        ELSE
+            RETURN QUERY SELECT false, 'none'::TEXT, 'Unknown event type'::TEXT;
+    END CASE;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."can_join_event"("p_user_id" "uuid", "p_event_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."can_manage_group_photo"("file_path" "text") RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_group_id uuid;
+    v_folder_name text;
+BEGIN
+    -- Extract folder name (group_id) from path like "group_id/cover.jpg"
+    v_folder_name := split_part(file_path, '/', 1);
+    
+    -- Try to cast to UUID
+    BEGIN
+        v_group_id := v_folder_name::uuid;
+    EXCEPTION WHEN OTHERS THEN
+        RETURN false;
+    END;
+    
+    -- Check if user is the creator of the group
+    IF EXISTS (
+        SELECT 1 FROM groups g 
+        WHERE g.id = v_group_id 
+        AND g.created_by = auth.uid()
+    ) THEN
+        RETURN true;
+    END IF;
+    
+    -- Check if user is owner/admin member of the group
+    IF EXISTS (
+        SELECT 1 FROM group_members gm
+        WHERE gm.group_id = v_group_id
+        AND gm.user_id = auth.uid()
+        AND gm.role IN ('owner', 'admin')
+    ) THEN
+        RETURN true;
+    END IF;
+    
+    RETURN false;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."can_manage_group_photo"("file_path" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."can_rate_event"("p_event_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    AS $$
+DECLARE
+    v_event_ended BOOLEAN;
+    v_is_member BOOLEAN;
+    v_already_rated BOOLEAN;
+BEGIN
+    -- Check if event has ended
+    SELECT (time_end < now()) INTO v_event_ended
+    FROM events WHERE id = p_event_id;
+    
+    IF NOT v_event_ended THEN
+        RETURN false;
+    END IF;
+    
+    -- Check if user is a member (approved application)
+    SELECT EXISTS (
+        SELECT 1 FROM event_applications
+        WHERE event_id = p_event_id
+        AND applicant_id = auth.uid()
+        AND status = 'approved'
+    ) INTO v_is_member;
+    
+    IF NOT v_is_member THEN
+        RETURN false;
+    END IF;
+    
+    -- Check if already rated
+    SELECT EXISTS (
+        SELECT 1 FROM event_ratings
+        WHERE event_id = p_event_id
+        AND rater_id = auth.uid()
+    ) INTO v_already_rated;
+    
+    RETURN NOT v_already_rated;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."can_rate_event"("p_event_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."can_see_event"("p_user_id" "uuid", "p_event_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_event_type event_type_enum;
+    v_host_id UUID;
+    v_group_id UUID;
+    v_community_id UUID;
+BEGIN
+    -- Get event details
+    SELECT event_type, host_id, group_id, community_id
+    INTO v_event_type, v_host_id, v_group_id, v_community_id
+    FROM events
+    WHERE id = p_event_id;
+    
+    IF NOT FOUND THEN
+        RETURN false;
+    END IF;
+    
+    -- Check block status
+    IF have_blocked_each_other(p_user_id, v_host_id) THEN
+        RETURN false;
+    END IF;
+    
+    -- Host can always see their own events
+    IF v_host_id = p_user_id THEN
+        RETURN true;
+    END IF;
+    
+    CASE v_event_type
+        -- Public events: everyone can see
+        WHEN 'public', 'public_application', 'private' THEN
+            RETURN true;
+            
+        -- Invite only: only invited users or approved attendees
+        WHEN 'invite_only' THEN
+            RETURN EXISTS (
+                SELECT 1 FROM event_invites ei
+                WHERE ei.event_id = p_event_id
+                AND ei.invited_user_id = p_user_id
+            ) OR EXISTS (
+                SELECT 1 FROM event_applications ea
+                WHERE ea.event_id = p_event_id
+                AND ea.applicant_id = p_user_id
+                AND ea.status = 'approved'
+            );
+            
+        -- Group event: only group members
+        WHEN 'group_event' THEN
+            RETURN EXISTS (
+                SELECT 1 FROM group_members gm
+                WHERE gm.group_id = v_group_id
+                AND gm.user_id = p_user_id
+            );
+            
+        -- Community event: only community members
+        WHEN 'community_event' THEN
+            RETURN EXISTS (
+                SELECT 1 FROM community_members cm
+                WHERE cm.community_id = v_community_id
+                AND cm.user_id = p_user_id
+            );
+            
+        ELSE
+            RETURN false;
+    END CASE;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."can_see_event"("p_user_id" "uuid", "p_event_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."can_see_on_map"("me" "uuid", "other" "uuid") RETURNS boolean
@@ -325,6 +990,80 @@ $$;
 ALTER FUNCTION "public"."can_see_on_map"("me" "uuid", "other" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."can_send_match_request"("p_requester_id" "uuid", "p_target_id" "uuid") RETURNS TABLE("can_send" boolean, "reason" "text", "context_type" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_can_see_on_map BOOLEAN;
+    v_in_same_finished_event BOOLEAN;
+    v_in_same_group BOOLEAN;
+    v_in_same_community_event BOOLEAN;
+    v_already_matched BOOLEAN;
+    v_pending_request BOOLEAN;
+    v_blocked BOOLEAN;
+BEGIN
+    v_blocked := have_blocked_each_other(p_requester_id, p_target_id);
+    IF v_blocked THEN
+        RETURN QUERY SELECT false, 'Users have blocked each other'::TEXT, 'none'::TEXT;
+        RETURN;
+    END IF;
+    
+    v_already_matched := EXISTS (
+        SELECT 1 FROM match_requests mr
+        WHERE ((mr.requester_id = p_requester_id AND mr.target_id = p_target_id)
+            OR (mr.requester_id = p_target_id AND mr.target_id = p_requester_id))
+        AND mr.status = 'accepted'
+    );
+    IF v_already_matched THEN
+        RETURN QUERY SELECT false, 'Already matched'::TEXT, 'none'::TEXT;
+        RETURN;
+    END IF;
+    
+    v_pending_request := EXISTS (
+        SELECT 1 FROM match_requests mr
+        WHERE ((mr.requester_id = p_requester_id AND mr.target_id = p_target_id)
+            OR (mr.requester_id = p_target_id AND mr.target_id = p_requester_id))
+        AND mr.status = 'pending'
+    );
+    IF v_pending_request THEN
+        RETURN QUERY SELECT false, 'Request already pending'::TEXT, 'none'::TEXT;
+        RETURN;
+    END IF;
+    
+    v_can_see_on_map := can_see_on_map(p_requester_id, p_target_id);
+    v_in_same_finished_event := were_in_same_finished_event(p_requester_id, p_target_id);
+    v_in_same_group := are_in_same_group(p_requester_id, p_target_id);
+    v_in_same_community_event := were_in_same_community_event(p_requester_id, p_target_id);
+    
+    IF v_in_same_finished_event THEN
+        RETURN QUERY SELECT true, 'Met at event'::TEXT, 'event'::TEXT;
+        RETURN;
+    END IF;
+    
+    IF v_in_same_group THEN
+        RETURN QUERY SELECT true, 'In same group'::TEXT, 'group'::TEXT;
+        RETURN;
+    END IF;
+    
+    IF v_in_same_community_event THEN
+        RETURN QUERY SELECT true, 'Met at community event'::TEXT, 'community_event'::TEXT;
+        RETURN;
+    END IF;
+    
+    IF v_can_see_on_map THEN
+        RETURN QUERY SELECT true, 'Nearby'::TEXT, 'proximity'::TEXT;
+        RETURN;
+    END IF;
+    
+    RETURN QUERY SELECT false, 'Users not in valid connection context'::TEXT, 'none'::TEXT;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."can_send_match_request"("p_requester_id" "uuid", "p_target_id" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."can_view_full"("me" "uuid", "other" "uuid") RETURNS boolean
     LANGUAGE "sql" STABLE
     AS $$
@@ -333,7 +1072,6 @@ CREATE OR REPLACE FUNCTION "public"."can_view_full"("me" "uuid", "other" "uuid")
         WHERE ((mr.requester_id = me AND mr.target_id = other)
             OR (mr.requester_id = other AND mr.target_id = me))
         AND mr.status = 'accepted'
-        AND mr.connection_visibility = 'full_profile'  -- NEW: only full profile connections
     )
     AND NOT have_blocked_each_other(me, other)
 $$;
@@ -371,12 +1109,199 @@ $$;
 ALTER FUNCTION "public"."check_user_exists"("user_email" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."create_community_conversation"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+BEGIN
+    INSERT INTO conversations (type, community_id)
+    VALUES ('community_chat', NEW.id)
+    RETURNING id INTO v_conversation_id;
+    
+    INSERT INTO conversation_members (conversation_id, user_id)
+    VALUES (v_conversation_id, NEW.created_by);
+    
+    INSERT INTO community_members (community_id, user_id, role)
+    VALUES (NEW.id, NEW.created_by, 'owner')
+    ON CONFLICT DO NOTHING;
+    
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."create_community_conversation"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."create_event_group_chat"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+BEGIN
+    -- Create event group chat conversation
+    INSERT INTO conversations (type, event_id)
+    VALUES ('event_group', NEW.id)
+    RETURNING id INTO v_conversation_id;
+    
+    -- Add host as first member
+    INSERT INTO conversation_members (conversation_id, user_id)
+    VALUES (v_conversation_id, NEW.host_id);
+    
+    -- For group events, add all group members
+    IF NEW.event_type = 'group_event' AND NEW.group_id IS NOT NULL THEN
+        INSERT INTO conversation_members (conversation_id, user_id)
+        SELECT v_conversation_id, gm.user_id
+        FROM group_members gm
+        WHERE gm.group_id = NEW.group_id
+        AND gm.user_id != NEW.host_id
+        ON CONFLICT DO NOTHING;
+        
+        -- Auto-approve all group members
+        INSERT INTO event_applications (event_id, applicant_id, status)
+        SELECT NEW.id, gm.user_id, 'approved'
+        FROM group_members gm
+        WHERE gm.group_id = NEW.group_id
+        ON CONFLICT DO NOTHING;
+    END IF;
+    
+    -- For community events, don't auto-add members (they join manually)
+    
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."create_event_group_chat"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."create_event_v2"("p_event_data" "jsonb") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_event_id UUID;
+    v_user_id UUID := auth.uid();
+    v_event_type event_type_enum;
+    v_group_id UUID;
+    v_community_id UUID;
+BEGIN
+    v_event_type := (p_event_data->>'event_type')::event_type_enum;
+    v_group_id := (p_event_data->>'group_id')::UUID;
+    v_community_id := (p_event_data->>'community_id')::UUID;
+    
+    -- Validate group event
+    IF v_event_type = 'group_event' THEN
+        IF v_group_id IS NULL THEN
+            RAISE EXCEPTION 'group_id is required for group events';
+        END IF;
+        -- Check if user is group member
+        IF NOT EXISTS (
+            SELECT 1 FROM group_members gm
+            WHERE gm.group_id = v_group_id AND gm.user_id = v_user_id
+        ) THEN
+            RAISE EXCEPTION 'Must be a group member to create group events';
+        END IF;
+    END IF;
+    
+    -- Validate community event
+    IF v_event_type = 'community_event' THEN
+        IF v_community_id IS NULL THEN
+            RAISE EXCEPTION 'community_id is required for community events';
+        END IF;
+        -- Check if user is community admin/owner
+        IF NOT EXISTS (
+            SELECT 1 FROM community_members cm
+            WHERE cm.community_id = v_community_id 
+            AND cm.user_id = v_user_id
+            AND cm.role IN ('owner', 'admin')
+        ) THEN
+            RAISE EXCEPTION 'Must be a community admin or owner to create community events';
+        END IF;
+    END IF;
+    
+    INSERT INTO events (
+        host_id,
+        event_name,
+        category,
+        event_description,
+        location,
+        location_name,
+        time_start,
+        time_end,
+        capacity,
+        gender_allowed,
+        age_min,
+        age_max,
+        status,
+        event_type,
+        group_id,
+        community_id,
+        allow_member_invites,
+        requires_approval,
+        fuzzy_radius_meters
+    ) VALUES (
+        v_user_id,
+        p_event_data->>'event_name',
+        (p_event_data->>'category')::event_category_enum,
+        p_event_data->>'event_description',
+        ST_SetSRID(
+            ST_MakePoint(
+                (p_event_data->>'longitude')::float,
+                (p_event_data->>'latitude')::float
+            ),
+            4326
+        ),
+        p_event_data->>'location_name',
+        (p_event_data->>'time_start')::timestamptz,
+        (p_event_data->>'time_end')::timestamptz,
+        COALESCE((p_event_data->>'capacity')::integer, 50),
+        COALESCE((p_event_data->>'gender_allowed')::gender_filter_enum, 'Everyone'),
+        COALESCE((p_event_data->>'age_min')::integer, 18),
+        COALESCE((p_event_data->>'age_max')::integer, 99),
+        'active',
+        v_event_type,
+        v_group_id,
+        v_community_id,
+        COALESCE((p_event_data->>'allow_member_invites')::boolean, false),
+        CASE v_event_type
+            WHEN 'public' THEN false
+            ELSE COALESCE((p_event_data->>'requires_approval')::boolean, true)
+        END,
+        COALESCE((p_event_data->>'fuzzy_radius_meters')::integer, 500)
+    ) RETURNING id INTO v_event_id;
+    
+    RETURN v_event_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."create_event_v2"("p_event_data" "jsonb") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."create_event_with_location"("p_event_data" json) RETURNS "uuid"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
 DECLARE
   v_event_id uuid;
+  v_event_type public.event_type_enum;
+  v_requires_approval boolean;
 BEGIN
+  -- Determine event_type from input or default to 'public'
+  v_event_type := COALESCE(
+    (p_event_data->>'event_type')::public.event_type_enum, 
+    'public'::public.event_type_enum
+  );
+  
+  -- Set requires_approval based on event_type
+  v_requires_approval := CASE 
+    WHEN v_event_type IN ('public_application', 'private') THEN true
+    ELSE false
+  END;
+
   INSERT INTO events (
     host_id,
     event_name,
@@ -390,7 +1315,10 @@ BEGIN
     gender_allowed,
     age_min,
     age_max,
-    status
+    status,
+    event_type,
+    requires_approval,
+    visibility
   ) VALUES (
     (p_event_data->>'host_id')::uuid,
     p_event_data->>'event_name',
@@ -410,7 +1338,15 @@ BEGIN
     (p_event_data->>'gender_allowed')::gender_filter_enum,
     (p_event_data->>'age_min')::integer,
     (p_event_data->>'age_max')::integer,
-    COALESCE((p_event_data->>'status')::event_status_enum, 'active')
+    COALESCE((p_event_data->>'status')::event_status_enum, 'active'),
+    v_event_type,
+    v_requires_approval,
+    -- Map event_type to visibility for backwards compatibility
+    CASE 
+      WHEN v_event_type = 'private' THEN 'private'::event_visibility_enum
+      WHEN v_event_type = 'invite_only' THEN 'invite_only'::event_visibility_enum
+      ELSE 'public'::event_visibility_enum
+    END
   ) RETURNING id INTO v_event_id;
   
   RETURN v_event_id;
@@ -419,6 +1355,32 @@ $$;
 
 
 ALTER FUNCTION "public"."create_event_with_location"("p_event_data" json) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."create_group_conversation"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+BEGIN
+    INSERT INTO conversations (type, group_id)
+    VALUES ('group_chat', NEW.id)
+    RETURNING id INTO v_conversation_id;
+    
+    INSERT INTO conversation_members (conversation_id, user_id)
+    VALUES (v_conversation_id, NEW.created_by);
+    
+    INSERT INTO group_members (group_id, user_id, role)
+    VALUES (NEW.id, NEW.created_by, 'owner')
+    ON CONFLICT DO NOTHING;
+    
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."create_group_conversation"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."current_user_id"() RETURNS "uuid"
@@ -432,6 +1394,37 @@ $$;
 
 
 ALTER FUNCTION "public"."current_user_id"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."decline_group_invite"("p_invite_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_invite RECORD;
+BEGIN
+    -- Get invite and verify ownership
+    SELECT * INTO v_invite
+    FROM group_invites
+    WHERE id = p_invite_id
+    AND invited_user_id = auth.uid()
+    AND status = 'pending';
+    
+    IF v_invite IS NULL THEN
+        RAISE EXCEPTION 'Invite not found or already processed';
+    END IF;
+    
+    -- Update invite status
+    UPDATE group_invites
+    SET status = 'declined'
+    WHERE id = p_invite_id;
+    
+    RETURN true;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."decline_group_invite"("p_invite_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."enforce_hobby_count"() RETURNS "trigger"
@@ -625,6 +1618,450 @@ $$;
 ALTER FUNCTION "public"."get_all_events_with_coordinates"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."get_community_members_basic"("p_community_id" "uuid") RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "main_photo_url" "text", "looking_for" "text"[], "role" "public"."member_role_enum", "joined_at" timestamp with time zone, "is_matched" boolean, "can_match_via_proximity" boolean, "can_match_via_event" boolean, "access_level" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM community_members cm
+        WHERE cm.community_id = p_community_id AND cm.user_id = v_user_id
+    ) THEN
+        RAISE EXCEPTION 'Not a member of this community';
+    END IF;
+    
+    RETURN QUERY
+    SELECT 
+        p.id as user_id,
+        p.full_name,
+        p.age,
+        COALESCE(p.bio, p.prompt) as bio,
+        (
+            SELECT up.photo_url
+            FROM user_photos up
+            WHERE up.user_id = p.id
+            ORDER BY up.is_main DESC, up.id ASC
+            LIMIT 1
+        ) as main_photo_url,
+        p.looking_for::text[],
+        cm.role,
+        cm.joined_at,
+        EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE ((mr.requester_id = v_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_user_id))
+            AND mr.status = 'accepted'
+        ) as is_matched,
+        can_see_on_map(v_user_id, p.id) as can_match_via_proximity,
+        were_in_same_community_event(v_user_id, p.id) as can_match_via_event,
+        get_profile_access_level(v_user_id, p.id) as access_level
+    FROM community_members cm
+    JOIN profiles p ON p.id = cm.user_id
+    WHERE cm.community_id = p_community_id
+    AND cm.user_id != v_user_id
+    AND NOT have_blocked_each_other(v_user_id, cm.user_id)
+    ORDER BY cm.role, cm.joined_at;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_community_members_basic"("p_community_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_connection_options"("p_target_id" "uuid") RETURNS TABLE("can_connect" boolean, "context_type" "text", "reason" "text", "shared_events" "uuid"[], "shared_groups" "uuid"[], "shared_communities" "uuid"[])
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+BEGIN
+    RETURN QUERY
+    WITH check_result AS (
+        SELECT * FROM can_send_match_request(v_user_id, p_target_id)
+    ),
+    shared_event_ids AS (
+        SELECT ARRAY_AGG(DISTINCT ea1.event_id) as ids
+        FROM event_applications ea1
+        JOIN event_applications ea2 ON ea1.event_id = ea2.event_id
+        JOIN events e ON e.id = ea1.event_id
+        WHERE ea1.applicant_id = v_user_id
+        AND ea2.applicant_id = p_target_id
+        AND ea1.status = 'approved'
+        AND ea2.status = 'approved'
+        AND e.time_end < now()
+    ),
+    shared_group_ids AS (
+        SELECT ARRAY_AGG(DISTINCT gm1.group_id) as ids
+        FROM group_members gm1
+        JOIN group_members gm2 ON gm1.group_id = gm2.group_id
+        WHERE gm1.user_id = v_user_id
+        AND gm2.user_id = p_target_id
+    ),
+    shared_community_ids AS (
+        SELECT ARRAY_AGG(DISTINCT cm1.community_id) as ids
+        FROM community_members cm1
+        JOIN community_members cm2 ON cm1.community_id = cm2.community_id
+        WHERE cm1.user_id = v_user_id
+        AND cm2.user_id = p_target_id
+    )
+    SELECT 
+        cr.can_send,
+        cr.context_type,
+        cr.reason,
+        COALESCE(se.ids, ARRAY[]::UUID[]),
+        COALESCE(sg.ids, ARRAY[]::UUID[]),
+        COALESCE(sc.ids, ARRAY[]::UUID[])
+    FROM check_result cr
+    CROSS JOIN shared_event_ids se
+    CROSS JOIN shared_group_ids sg
+    CROSS JOIN shared_community_ids sc;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_connection_options"("p_target_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_event_applications_for_host"("p_event_id" "uuid") RETURNS TABLE("application_id" "uuid", "applicant_id" "uuid", "status" "public"."event_application_status_enum", "message" "text", "created_at" timestamp with time zone, "updated_at" timestamp with time zone, "applicant_name" "text", "applicant_age" integer, "applicant_bio" "text", "applicant_photo_url" "text", "applicant_looking_for" "text"[], "access_level" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+    v_host_id UUID;
+BEGIN
+    SELECT host_id INTO v_host_id FROM events WHERE id = p_event_id;
+    
+    IF v_host_id IS NULL THEN
+        RAISE EXCEPTION 'Event not found';
+    END IF;
+    
+    IF v_host_id != v_user_id THEN
+        RAISE EXCEPTION 'Not authorized - not the host';
+    END IF;
+    
+    RETURN QUERY
+    SELECT 
+        ea.id as application_id,
+        ea.applicant_id,
+        ea.status,
+        ea.message,
+        ea.created_at,
+        ea.updated_at,
+        p.full_name as applicant_name,
+        p.age as applicant_age,
+        COALESCE(p.bio, p.prompt) as applicant_bio,
+        (
+            SELECT up.photo_url
+            FROM user_photos up
+            WHERE up.user_id = p.id
+            ORDER BY up.is_main DESC, up.id ASC
+            LIMIT 1
+        ) as applicant_photo_url,
+        p.looking_for::text[] as applicant_looking_for,
+        get_profile_access_level(v_user_id, ea.applicant_id) as access_level
+    FROM event_applications ea
+    JOIN profiles p ON p.id = ea.applicant_id
+    WHERE ea.event_id = p_event_id
+    AND NOT have_blocked_each_other(v_user_id, ea.applicant_id)
+    ORDER BY 
+        CASE ea.status 
+            WHEN 'pending' THEN 1 
+            WHEN 'approved' THEN 2 
+            WHEN 'rejected' THEN 3
+            ELSE 4
+        END,
+        ea.created_at DESC;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_event_applications_for_host"("p_event_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."get_event_applications_for_host"("p_event_id" "uuid") IS 'Returns all applications for an event, with applicant profile data and access levels. Only callable by the event host.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."get_event_host_id"("p_event_id" "uuid") RETURNS "uuid"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  SELECT host_id FROM events WHERE id = p_event_id;
+$$;
+
+
+ALTER FUNCTION "public"."get_event_host_id"("p_event_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_event_members"("p_event_id" "uuid") RETURNS TABLE("user_id" "uuid", "full_name" "text", "is_host" boolean, "joined_at" timestamp with time zone, "main_photo_url" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    AS $$
+DECLARE
+    v_host_id UUID;
+BEGIN
+    -- Get host id
+    SELECT host_id INTO v_host_id FROM events WHERE id = p_event_id;
+    
+    RETURN QUERY
+    SELECT 
+        ea.applicant_id,
+        p.full_name,
+        (ea.applicant_id = v_host_id) AS is_host,
+        ea.created_at AS joined_at,
+        (SELECT up.photo_url FROM user_photos up 
+         WHERE up.user_id = ea.applicant_id AND up.is_main = true 
+         LIMIT 1) AS main_photo_url
+    FROM event_applications ea
+    JOIN profiles p ON ea.applicant_id = p.id
+    WHERE ea.event_id = p_event_id
+    AND ea.status = 'approved'
+    
+    UNION
+    
+    -- Include host even if not in applications
+    SELECT 
+        v_host_id,
+        p.full_name,
+        true AS is_host,
+        e.created_at AS joined_at,
+        (SELECT up.photo_url FROM user_photos up 
+         WHERE up.user_id = v_host_id AND up.is_main = true 
+         LIMIT 1) AS main_photo_url
+    FROM events e
+    JOIN profiles p ON e.host_id = p.id
+    WHERE e.id = p_event_id
+    
+    ORDER BY is_host DESC, joined_at ASC;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_event_members"("p_event_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_event_participants_preview"("p_event_id" "uuid") RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "main_photo_url" "text", "frame_id" "uuid", "looking_for" "text"[], "is_host" boolean, "joined_at" timestamp with time zone, "is_matched" boolean, "can_send_request" boolean, "request_context" "text", "access_level" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+    v_host_id UUID;
+    v_is_participant BOOLEAN;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1 FROM event_applications ea
+        WHERE ea.event_id = p_event_id
+        AND ea.applicant_id = v_user_id
+        AND ea.status = 'approved'
+    ) INTO v_is_participant;
+    
+    SELECT host_id INTO v_host_id FROM events WHERE id = p_event_id;
+    
+    IF v_user_id = v_host_id THEN
+        v_is_participant := true;
+    END IF;
+    
+    IF NOT v_is_participant THEN
+        RAISE EXCEPTION 'Not a participant of this event';
+    END IF;
+    
+    RETURN QUERY
+    WITH participants AS (
+        SELECT ea.applicant_id as pid, ea.created_at as join_time
+        FROM event_applications ea
+        WHERE ea.event_id = p_event_id AND ea.status = 'approved'
+        
+        UNION
+        
+        SELECT e.host_id as pid, e.created_at as join_time
+        FROM events e
+        WHERE e.id = p_event_id
+    )
+    SELECT 
+        p.id as user_id,
+        p.full_name,
+        p.age,
+        COALESCE(p.bio, p.prompt) as bio,
+        (
+            SELECT up.photo_url
+            FROM user_photos up
+            WHERE up.user_id = p.id
+            ORDER BY up.is_main DESC, up.id ASC
+            LIMIT 1
+        ) as main_photo_url,
+        CASE 
+            WHEN get_profile_access_level(v_user_id, p.id) = 'full' 
+            THEN p.frame_id 
+            ELSE NULL 
+        END as frame_id,
+        p.looking_for::text[],
+        (p.id = v_host_id) as is_host,
+        part.join_time as joined_at,
+        EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE ((mr.requester_id = v_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_user_id))
+            AND mr.status = 'accepted'
+        ) as is_matched,
+        NOT EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE ((mr.requester_id = v_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_user_id))
+            AND mr.status IN ('pending', 'accepted')
+        ) AND NOT have_blocked_each_other(v_user_id, p.id) as can_send_request,
+        'event'::text as request_context,
+        get_profile_access_level(v_user_id, p.id) as access_level
+    FROM participants part
+    JOIN profiles p ON p.id = part.pid
+    WHERE p.id != v_user_id
+    AND NOT have_blocked_each_other(v_user_id, p.id)
+    ORDER BY (p.id = v_host_id) DESC, part.join_time ASC;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_event_participants_preview"("p_event_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_events_by_type"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer DEFAULT 30, "p_event_types" "public"."event_type_enum"[] DEFAULT NULL::"public"."event_type_enum"[]) RETURNS TABLE("id" "uuid", "host_id" "uuid", "event_name" "text", "category" "public"."event_category_enum", "event_description" "text", "location_name" "text", "time_start" timestamp with time zone, "time_end" timestamp with time zone, "capacity" integer, "current_attendees" bigint, "gender_allowed" "public"."gender_filter_enum", "age_min" integer, "age_max" integer, "status" "public"."event_status_enum", "event_type" "public"."event_type_enum", "latitude" double precision, "longitude" double precision, "is_exact_location" boolean, "distance_km" double precision, "can_join" boolean, "join_method" "text", "group_id" "uuid", "group_name" "text", "community_id" "uuid", "community_name" "text", "allow_member_invites" boolean)
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+BEGIN
+    RETURN QUERY
+    WITH event_attendees AS (
+        SELECT ea.event_id, COUNT(*) as attendee_count
+        FROM event_applications ea
+        WHERE ea.status = 'approved'
+        GROUP BY ea.event_id
+    ),
+    user_groups AS (
+        SELECT gm.group_id FROM group_members gm WHERE gm.user_id = v_user_id
+    ),
+    user_communities AS (
+        SELECT cm.community_id FROM community_members cm WHERE cm.user_id = v_user_id
+    ),
+    user_invites AS (
+        SELECT ei.event_id FROM event_invites ei 
+        WHERE ei.invited_user_id = v_user_id
+    ),
+    user_approved AS (
+        SELECT ea.event_id FROM event_applications ea
+        WHERE ea.applicant_id = v_user_id AND ea.status = 'approved'
+    )
+    SELECT 
+        e.id,
+        e.host_id,
+        e.event_name,
+        e.category,
+        e.event_description,
+        e.location_name,
+        e.time_start,
+        e.time_end,
+        e.capacity,
+        COALESCE(att.attendee_count, 0) as current_attendees,
+        e.gender_allowed,
+        e.age_min,
+        e.age_max,
+        e.status,
+        e.event_type,
+        -- Location logic: fuzzy for private events unless approved
+        CASE 
+            WHEN e.event_type = 'private' 
+                AND e.host_id != v_user_id
+                AND NOT EXISTS (SELECT 1 FROM user_approved ua WHERE ua.event_id = e.id)
+            THEN ST_Y(e.location::geometry) + (random() - 0.5) * (e.fuzzy_radius_meters::DOUBLE PRECISION / 111000)
+            ELSE ST_Y(e.location::geometry)
+        END AS latitude,
+        CASE 
+            WHEN e.event_type = 'private' 
+                AND e.host_id != v_user_id
+                AND NOT EXISTS (SELECT 1 FROM user_approved ua WHERE ua.event_id = e.id)
+            THEN ST_X(e.location::geometry) + (random() - 0.5) * (e.fuzzy_radius_meters::DOUBLE PRECISION / (111000 * cos(radians(ST_Y(e.location::geometry)))))
+            ELSE ST_X(e.location::geometry)
+        END AS longitude,
+        -- Is exact location
+        (e.event_type != 'private' 
+            OR e.host_id = v_user_id
+            OR EXISTS (SELECT 1 FROM user_approved ua WHERE ua.event_id = e.id)
+        ) AS is_exact_location,
+        -- Distance
+        ST_Distance(
+            e.location,
+            ST_SetSRID(ST_MakePoint(p_user_lng, p_user_lat), 4326)::geography
+        ) / 1000 AS distance_km,
+        -- Can join (simplified - use can_join_event for full check)
+        CASE e.event_type
+            WHEN 'public' THEN true
+            WHEN 'public_application' THEN true
+            WHEN 'private' THEN true
+            WHEN 'invite_only' THEN EXISTS (SELECT 1 FROM user_invites ui WHERE ui.event_id = e.id)
+            WHEN 'group_event' THEN EXISTS (SELECT 1 FROM user_groups ug WHERE ug.group_id = e.group_id)
+            WHEN 'community_event' THEN EXISTS (SELECT 1 FROM user_communities uc WHERE uc.community_id = e.community_id)
+        END AS can_join,
+        -- Join method
+        CASE e.event_type
+            WHEN 'public' THEN 'direct'
+            WHEN 'public_application' THEN 'application'
+            WHEN 'private' THEN 'application'
+            WHEN 'invite_only' THEN 'invite'
+            WHEN 'group_event' THEN 'direct'
+            WHEN 'community_event' THEN 'direct'
+        END AS join_method,
+        e.group_id,
+        g.name as group_name,
+        e.community_id,
+        c.name as community_name,
+        e.allow_member_invites
+    FROM events e
+    LEFT JOIN event_attendees att ON att.event_id = e.id
+    LEFT JOIN groups g ON g.id = e.group_id
+    LEFT JOIN communities c ON c.id = e.community_id
+    WHERE e.status = 'active'
+        AND e.time_end > now()
+        AND NOT have_blocked_each_other(v_user_id, e.host_id)
+        -- Filter by event types if specified
+        AND (p_event_types IS NULL OR e.event_type = ANY(p_event_types))
+        -- Visibility logic
+        AND (
+            -- Public types: check distance
+            (e.event_type IN ('public', 'public_application', 'private') 
+                AND ST_DWithin(
+                    e.location,
+                    ST_SetSRID(ST_MakePoint(p_user_lng, p_user_lat), 4326)::geography,
+                    p_radius_km * 1000
+                )
+            )
+            -- Invite only: must be host, invited, or approved
+            OR (e.event_type = 'invite_only' 
+                AND (
+                    e.host_id = v_user_id
+                    OR EXISTS (SELECT 1 FROM user_invites ui WHERE ui.event_id = e.id)
+                    OR EXISTS (SELECT 1 FROM user_approved ua WHERE ua.event_id = e.id)
+                )
+            )
+            -- Group event: must be group member
+            OR (e.event_type = 'group_event' 
+                AND EXISTS (SELECT 1 FROM user_groups ug WHERE ug.group_id = e.group_id)
+            )
+            -- Community event: must be community member
+            OR (e.event_type = 'community_event' 
+                AND EXISTS (SELECT 1 FROM user_communities uc WHERE uc.community_id = e.community_id)
+            )
+        )
+    ORDER BY e.time_start ASC;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_events_by_type"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer, "p_event_types" "public"."event_type_enum"[]) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."get_events_with_coordinates"("p_status" "public"."event_status_enum" DEFAULT 'active'::"public"."event_status_enum") RETURNS TABLE("id" "uuid", "host_id" "uuid", "event_name" "text", "category" "public"."event_category_enum", "event_description" "text", "location_name" "text", "time_start" timestamp with time zone, "time_end" timestamp with time zone, "capacity" integer, "gender_allowed" "public"."gender_filter_enum", "age_min" integer, "age_max" integer, "status" "public"."event_status_enum", "created_at" timestamp with time zone, "updated_at" timestamp with time zone, "latitude" double precision, "longitude" double precision)
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -660,6 +2097,341 @@ $$;
 ALTER FUNCTION "public"."get_events_with_coordinates"("p_status" "public"."event_status_enum") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."get_events_with_visibility"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer DEFAULT 30) RETURNS TABLE("id" "uuid", "host_id" "uuid", "event_name" "text", "category" "public"."event_category_enum", "event_description" "text", "location_name" "text", "time_start" timestamp with time zone, "time_end" timestamp with time zone, "capacity" integer, "gender_allowed" "public"."gender_filter_enum", "age_min" integer, "age_max" integer, "status" "public"."event_status_enum", "visibility" "public"."event_visibility_enum", "latitude" double precision, "longitude" double precision, "is_exact_location" boolean, "distance_km" double precision)
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+BEGIN
+    RETURN QUERY
+    SELECT 
+        e.id,
+        e.host_id,
+        e.event_name,
+        e.category,
+        e.event_description,
+        e.location_name,
+        e.time_start,
+        e.time_end,
+        e.capacity,
+        e.gender_allowed,
+        e.age_min,
+        e.age_max,
+        e.status,
+        e.visibility,
+        CASE 
+            WHEN e.visibility = 'private' 
+                AND e.host_id != v_user_id
+                AND NOT EXISTS (
+                    SELECT 1 FROM event_applications ea 
+                    WHERE ea.event_id = e.id 
+                    AND ea.applicant_id = v_user_id 
+                    AND ea.status = 'approved'
+                )
+            THEN ST_Y(e.location::geometry) + (random() - 0.5) * (e.fuzzy_radius_meters::DOUBLE PRECISION / 111000)
+            ELSE ST_Y(e.location::geometry)
+        END AS latitude,
+        CASE 
+            WHEN e.visibility = 'private' 
+                AND e.host_id != v_user_id
+                AND NOT EXISTS (
+                    SELECT 1 FROM event_applications ea 
+                    WHERE ea.event_id = e.id 
+                    AND ea.applicant_id = v_user_id 
+                    AND ea.status = 'approved'
+                )
+            THEN ST_X(e.location::geometry) + (random() - 0.5) * (e.fuzzy_radius_meters::DOUBLE PRECISION / (111000 * cos(radians(ST_Y(e.location::geometry)))))
+            ELSE ST_X(e.location::geometry)
+        END AS longitude,
+        (e.visibility != 'private' 
+            OR e.host_id = v_user_id
+            OR EXISTS (
+                SELECT 1 FROM event_applications ea 
+                WHERE ea.event_id = e.id 
+                AND ea.applicant_id = v_user_id 
+                AND ea.status = 'approved'
+            )
+        ) AS is_exact_location,
+        ST_Distance(
+            e.location,
+            ST_SetSRID(ST_MakePoint(p_user_lng, p_user_lat), 4326)::geography
+        ) / 1000 AS distance_km
+    FROM events e
+    WHERE e.status = 'active'
+        AND e.time_end > now()
+        AND NOT have_blocked_each_other(v_user_id, e.host_id)
+        AND (
+            (e.visibility IN ('public', 'private') 
+                AND ST_DWithin(
+                    e.location,
+                    ST_SetSRID(ST_MakePoint(p_user_lng, p_user_lat), 4326)::geography,
+                    p_radius_km * 1000
+                )
+            )
+            OR (e.visibility = 'invite_only' 
+                AND (
+                    e.host_id = v_user_id
+                    OR EXISTS (
+                        SELECT 1 FROM event_invites ei 
+                        WHERE ei.event_id = e.id 
+                        AND ei.invited_user_id = v_user_id
+                    )
+                )
+            )
+        )
+    ORDER BY e.time_start ASC;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_events_with_visibility"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_finished_event_participants"("p_event_id" "uuid") RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "main_photo_url" "text", "looking_for" "text"[], "is_host" boolean, "can_match" boolean, "is_already_matched" boolean, "access_level" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+    v_event_finished BOOLEAN;
+    v_host_id UUID;
+BEGIN
+    SELECT (time_end < now()), host_id INTO v_event_finished, v_host_id
+    FROM events WHERE id = p_event_id;
+    
+    IF NOT v_event_finished THEN
+        RAISE EXCEPTION 'Event has not finished yet';
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM event_applications ea
+        WHERE ea.event_id = p_event_id
+        AND ea.applicant_id = v_user_id
+        AND ea.status = 'approved'
+    ) AND v_host_id != v_user_id THEN
+        RAISE EXCEPTION 'Not a participant of this event';
+    END IF;
+    
+    RETURN QUERY
+    WITH participants AS (
+        SELECT ea.applicant_id as pid
+        FROM event_applications ea
+        WHERE ea.event_id = p_event_id AND ea.status = 'approved'
+        UNION
+        SELECT e.host_id as pid FROM events e WHERE e.id = p_event_id
+    )
+    SELECT 
+        p.id,
+        p.full_name,
+        p.age,
+        COALESCE(p.bio, p.prompt),
+        (SELECT up.photo_url FROM user_photos up WHERE up.user_id = p.id ORDER BY up.is_main DESC LIMIT 1),
+        p.looking_for::text[],
+        (p.id = v_host_id),
+        NOT EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE ((mr.requester_id = v_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_user_id))
+            AND mr.status IN ('pending', 'accepted')
+        ) AND NOT have_blocked_each_other(v_user_id, p.id),
+        EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE ((mr.requester_id = v_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_user_id))
+            AND mr.status = 'accepted'
+        ),
+        get_profile_access_level(v_user_id, p.id)
+    FROM participants part
+    JOIN profiles p ON p.id = part.pid
+    WHERE p.id != v_user_id
+    AND NOT have_blocked_each_other(v_user_id, p.id);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_finished_event_participants"("p_event_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_group_members_for_invitee"("p_group_id" "uuid") RETURNS TABLE("user_id" "uuid", "full_name" "text", "avatar_url" "text", "role" "text", "status" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+BEGIN
+    -- Check if user is either a member OR has a pending invite
+    IF NOT EXISTS (
+        SELECT 1 FROM group_members gm
+        WHERE gm.group_id = p_group_id AND gm.user_id = v_user_id
+    ) AND NOT EXISTS (
+        SELECT 1 FROM group_invites gi
+        WHERE gi.group_id = p_group_id 
+        AND gi.invited_user_id = v_user_id 
+        AND gi.status = 'pending'
+    ) THEN
+        RAISE EXCEPTION 'Not a member or invitee of this group';
+    END IF;
+    
+    -- Return active members
+    RETURN QUERY
+    SELECT 
+        p.id as user_id,
+        p.full_name,
+        (
+            SELECT up.photo_url
+            FROM user_photos up
+            WHERE up.user_id = p.id AND up.is_main = true
+            LIMIT 1
+        ) as avatar_url,
+        gm.role::text,
+        'active'::text as status
+    FROM group_members gm
+    JOIN profiles p ON p.id = gm.user_id
+    WHERE gm.group_id = p_group_id
+    ORDER BY 
+        CASE gm.role 
+            WHEN 'owner' THEN 0 
+            WHEN 'admin' THEN 1 
+            ELSE 2 
+        END,
+        gm.joined_at ASC;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_group_members_for_invitee"("p_group_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_group_members_with_connections"("p_group_id" "uuid") RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "main_photo_url" "text", "frame_id" "uuid", "looking_for" "text"[], "role" "public"."member_role_enum", "joined_at" timestamp with time zone, "is_matched" boolean, "can_send_request" boolean, "has_pending_request" boolean, "access_level" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM group_members gm
+        WHERE gm.group_id = p_group_id AND gm.user_id = v_user_id
+    ) THEN
+        RAISE EXCEPTION 'Not a member of this group';
+    END IF;
+    
+    RETURN QUERY
+    SELECT 
+        p.id as user_id,
+        p.full_name,
+        p.age,
+        COALESCE(p.bio, p.prompt) as bio,
+        (
+            SELECT up.photo_url
+            FROM user_photos up
+            WHERE up.user_id = p.id
+            ORDER BY up.is_main DESC, up.id ASC
+            LIMIT 1
+        ) as main_photo_url,
+        CASE 
+            WHEN get_profile_access_level(v_user_id, p.id) = 'full' 
+            THEN p.frame_id 
+            ELSE NULL 
+        END as frame_id,
+        p.looking_for::text[],
+        gm.role,
+        gm.joined_at,
+        EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE ((mr.requester_id = v_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_user_id))
+            AND mr.status = 'accepted'
+        ) as is_matched,
+        NOT EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE ((mr.requester_id = v_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_user_id))
+            AND mr.status IN ('pending', 'accepted')
+        ) AND NOT have_blocked_each_other(v_user_id, p.id) as can_send_request,
+        EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE ((mr.requester_id = v_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_user_id))
+            AND mr.status = 'pending'
+        ) as has_pending_request,
+        get_profile_access_level(v_user_id, p.id) as access_level
+    FROM group_members gm
+    JOIN profiles p ON p.id = gm.user_id
+    WHERE gm.group_id = p_group_id
+    AND gm.user_id != v_user_id
+    AND NOT have_blocked_each_other(v_user_id, gm.user_id)
+    ORDER BY gm.role, gm.joined_at;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_group_members_with_connections"("p_group_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_group_pending_invites_for_invitee"("p_group_id" "uuid", "p_exclude_invite_id" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("invite_id" "uuid", "user_id" "uuid", "full_name" "text", "avatar_url" "text", "role" "text")
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+BEGIN
+    -- Check if user is either a member OR has a pending invite
+    IF NOT EXISTS (
+        SELECT 1 FROM group_members gm
+        WHERE gm.group_id = p_group_id AND gm.user_id = v_user_id
+    ) AND NOT EXISTS (
+        SELECT 1 FROM group_invites gi
+        WHERE gi.group_id = p_group_id 
+        AND gi.invited_user_id = v_user_id 
+        AND gi.status = 'pending'
+    ) THEN
+        RAISE EXCEPTION 'Not a member or invitee of this group';
+    END IF;
+    
+    -- Return pending invitees (excluding current user's invite if specified)
+    RETURN QUERY
+    SELECT 
+        gi.id as invite_id,
+        p.id as user_id,
+        p.full_name,
+        (
+            SELECT up.photo_url
+            FROM user_photos up
+            WHERE up.user_id = p.id AND up.is_main = true
+            LIMIT 1
+        ) as avatar_url,
+        gi.role::text
+    FROM group_invites gi
+    JOIN profiles p ON p.id = gi.invited_user_id
+    WHERE gi.group_id = p_group_id
+    AND gi.status = 'pending'
+    AND (p_exclude_invite_id IS NULL OR gi.id != p_exclude_invite_id)
+    ORDER BY gi.created_at ASC;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_group_pending_invites_for_invitee"("p_group_id" "uuid", "p_exclude_invite_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_host_rating_summary"("p_host_id" "uuid") RETURNS TABLE("total_events_hosted" bigint, "total_ratings" bigint, "average_rating" numeric)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    AS $$
+    SELECT 
+        COUNT(DISTINCT e.id) AS total_events_hosted,
+        COUNT(DISTINCT er.id) AS total_ratings,
+        ROUND(AVG(er.rating), 1) AS average_rating
+    FROM events e
+    LEFT JOIN event_ratings er ON e.id = er.event_id
+    WHERE e.host_id = p_host_id
+    AND e.status IN ('finished', 'expired');
+$$;
+
+
+ALTER FUNCTION "public"."get_host_rating_summary"("p_host_id" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."get_host_ratings"() RETURNS TABLE("host_id" "uuid", "total_ratings" bigint, "average_rating" numeric, "min_rating" numeric, "max_rating" numeric)
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -682,86 +2454,139 @@ $$;
 ALTER FUNCTION "public"."get_host_ratings"() OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."get_map_cards"() RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "frame_id" "uuid", "mode" "text", "approx_lat" numeric, "approx_lng" numeric, "main_photo_url" "text")
-    LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+CREATE OR REPLACE FUNCTION "public"."get_map_cards"() RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "frame_id" "text", "approx_lat" numeric, "approx_lng" numeric, "main_photo_url" "text", "looking_for" "text"[], "access_level" "text")
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
     AS $$
-    SELECT * FROM get_map_cards('dating'::match_mode_enum);
+DECLARE
+    v_current_user_id uuid := auth.uid();
+BEGIN
+    IF v_current_user_id IS NULL THEN
+        RAISE EXCEPTION 'not authenticated';
+    END IF;
+
+    RETURN QUERY
+    SELECT 
+        p.id as user_id,
+        p.full_name,
+        p.age,
+        COALESCE(p.bio, p.prompt) as bio,
+        CASE 
+            WHEN get_profile_access_level(v_current_user_id, p.id) = 'full' 
+            THEN p.frame_id::text 
+            ELSE NULL 
+        END as frame_id,
+        ROUND(
+            p.lat::numeric + 
+            ((abs(hashtext(p.id::text)) % 20000 - 10000) / 1000000.0)::numeric, 
+            6
+        ) as approx_lat,
+        ROUND(
+            p.lng::numeric + 
+            ((abs(hashtext(p.id::text || 'lng')) % 20000 - 10000) / 1000000.0)::numeric, 
+            6
+        ) as approx_lng,
+        (
+            SELECT up.photo_url
+            FROM user_photos up 
+            WHERE up.user_id = p.id
+            ORDER BY up.is_main DESC, up.id ASC
+            LIMIT 1
+        ) as main_photo_url,
+        p.looking_for::text[] as looking_for,
+        get_profile_access_level(v_current_user_id, p.id) as access_level
+    FROM profiles p
+    WHERE 
+        p.id != v_current_user_id
+        AND can_see_on_map(v_current_user_id, p.id)
+        AND NOT EXISTS(
+            SELECT 1 FROM match_requests mr
+            WHERE mr.status = 'denied'
+            AND ((mr.requester_id = v_current_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_current_user_id))
+        )
+        AND NOT have_blocked_each_other(v_current_user_id, p.id)
+    ORDER BY p.last_seen DESC;
+END;
 $$;
 
 
 ALTER FUNCTION "public"."get_map_cards"() OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."get_map_cards"("p_mode" "public"."match_mode_enum" DEFAULT 'dating'::"public"."match_mode_enum") RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "frame_id" "uuid", "mode" "text", "approx_lat" numeric, "approx_lng" numeric, "main_photo_url" "text")
+CREATE OR REPLACE FUNCTION "public"."get_map_cards_live"() RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "frame_id" "uuid", "approx_lat" numeric, "approx_lng" numeric, "main_photo_url" "text", "looking_for" "text"[], "last_seen" timestamp with time zone, "access_level" "text")
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
     AS $$
+DECLARE
+    v_current_user_id uuid := auth.uid();
 BEGIN
-    -- Check auth for clearer error
-    IF auth.uid() IS NULL THEN
+    IF v_current_user_id IS NULL THEN
         RAISE EXCEPTION 'not authenticated';
     END IF;
 
     RETURN QUERY
-    WITH latest_mode AS (
-        SELECT DISTINCT ON (user_id)
-            user_id,
-            mode
-        FROM user_modes
-        ORDER BY user_id, created_at DESC
-    )
     SELECT 
-        p.id as user_id,
+        p.id,
         p.full_name,
         p.age,
-        COALESCE(p.bio, p.prompt) as bio,  -- Fallback for backward compatibility
-        p.frame_id,
-        COALESCE(lm.mode, 'dating') as mode,
-        ROUND(p.lat + (RANDOM() - 0.5) * 0.01, 4) as approx_lat,
-        ROUND(p.lng + (RANDOM() - 0.5) * 0.01, 4) as approx_lng,
+        COALESCE(p.bio, p.prompt),
+        CASE 
+            WHEN get_profile_access_level(v_current_user_id, p.id) = 'full' 
+            THEN p.frame_id 
+            ELSE NULL 
+        END,
+        ROUND(
+            p.lat + 
+            ((abs(hashtext(p.id::text)) % 20000 - 10000) / 1000000.0)::numeric,
+            6
+        ),
+        ROUND(
+            p.lng + 
+            ((abs(hashtext(p.id::text || 'lng')) % 20000 - 10000) / 1000000.0)::numeric,
+            6
+        ),
         (
-            SELECT photo_url
+            SELECT up.photo_url
             FROM user_photos up 
             WHERE up.user_id = p.id 
-            ORDER BY is_main DESC, id ASC
+            ORDER BY up.is_main DESC, up.id ASC
             LIMIT 1
-        ) as main_photo_url
+        ),
+        p.looking_for::text[],
+        p.last_seen,
+        get_profile_access_level(v_current_user_id, p.id)
     FROM profiles p
-    LEFT JOIN latest_mode lm ON lm.user_id = p.id
     WHERE 
-        can_see_on_map(auth.uid(), p.id)
+        p.last_seen > (now() - interval '5 minutes')
+        AND can_see_on_map(v_current_user_id, p.id)
         AND NOT EXISTS(
             SELECT 1 FROM match_requests mr
             WHERE mr.status = 'denied'
-            AND mr.match_mode = p_mode
-            AND ((mr.requester_id = auth.uid() AND mr.target_id = p.id)
-                OR (mr.requester_id = p.id AND mr.target_id = auth.uid()))
+            AND ((mr.requester_id = v_current_user_id AND mr.target_id = p.id)
+                OR (mr.requester_id = p.id AND mr.target_id = v_current_user_id))
         )
-        AND NOT have_blocked_each_other(auth.uid(), p.id)
-        AND p.id != auth.uid()
+        AND NOT have_blocked_each_other(v_current_user_id, p.id)
+        AND p.id != v_current_user_id
     ORDER BY p.last_seen DESC;
 END;
 $$;
 
 
-ALTER FUNCTION "public"."get_map_cards"("p_mode" "public"."match_mode_enum") OWNER TO "postgres";
+ALTER FUNCTION "public"."get_map_cards_live"() OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."get_match_status"("target_user_id" "uuid", "p_mode" "public"."match_mode_enum" DEFAULT 'dating'::"public"."match_mode_enum") RETURNS TABLE("status" "public"."match_status_enum", "connection_visibility" "public"."connection_visibility_enum", "chat_allowed" boolean, "is_requester" boolean, "match_id" "uuid")
+CREATE OR REPLACE FUNCTION "public"."get_match_status"("target_user_id" "uuid") RETURNS TABLE("status" "public"."match_status_enum", "is_requester" boolean, "match_id" "uuid")
     LANGUAGE "plpgsql" STABLE
     AS $$
 BEGIN
     RETURN QUERY
     SELECT 
         mr.status,
-        mr.connection_visibility,
-        mr.chat_allowed,
         (mr.requester_id = auth.uid()) as is_requester,
         mr.id as match_id
     FROM match_requests mr
-    WHERE mr.match_mode = p_mode
-    AND ((mr.requester_id = auth.uid() AND mr.target_id = target_user_id)
+    WHERE ((mr.requester_id = auth.uid() AND mr.target_id = target_user_id)
         OR (mr.requester_id = target_user_id AND mr.target_id = auth.uid()))
     ORDER BY mr.created_at DESC
     LIMIT 1;
@@ -769,7 +2594,193 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."get_match_status"("target_user_id" "uuid", "p_mode" "public"."match_mode_enum") OWNER TO "postgres";
+ALTER FUNCTION "public"."get_match_status"("target_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_match_status_extended"("target_user_id" "uuid") RETURNS TABLE("status" "public"."match_status_enum", "is_requester" boolean, "match_id" "uuid", "sender_message" "text", "created_at" timestamp with time zone, "responded_at" timestamp with time zone)
+    LANGUAGE "sql" STABLE
+    AS $$
+    SELECT 
+        mr.status,
+        (mr.requester_id = auth.uid()) as is_requester,
+        mr.id as match_id,
+        mr.sender_message,
+        mr.created_at,
+        mr.responded_at
+    FROM match_requests mr
+    WHERE (
+        (mr.requester_id = auth.uid() AND mr.target_id = target_user_id)
+        OR 
+        (mr.target_id = auth.uid() AND mr.requester_id = target_user_id)
+    )
+    ORDER BY mr.created_at DESC
+    LIMIT 1;
+$$;
+
+
+ALTER FUNCTION "public"."get_match_status_extended"("target_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_matched_user_profile"("target_user_id" "uuid") RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "main_photo_url" "text", "frame_id" "uuid")
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    caller uuid := auth.uid();
+BEGIN
+    -- Must be authenticated
+    IF caller IS NULL THEN
+        RAISE EXCEPTION 'not authenticated';
+    END IF;
+    
+    -- Check if there's a match_request between these users (either direction, any status)
+    -- This allows viewing profile for:
+    -- 1. Pending requests (incoming or outgoing)
+    -- 2. Accepted matches
+    -- 3. Users you've interacted with via requests
+    IF NOT EXISTS (
+        SELECT 1 FROM match_requests mr
+        WHERE (
+            (mr.requester_id = caller AND mr.target_id = target_user_id) OR
+            (mr.requester_id = target_user_id AND mr.target_id = caller)
+        )
+    ) THEN
+        -- Also allow if user is visible on map (fallback)
+        IF NOT can_view_preview(caller, target_user_id) THEN
+            RETURN; -- Return empty if no relationship and not on map
+        END IF;
+    END IF;
+    
+    -- Block check
+    IF have_blocked_each_other(caller, target_user_id) THEN
+        RETURN;
+    END IF;
+    
+    RETURN QUERY
+    SELECT 
+        p.id as user_id,
+        p.full_name,
+        p.age,
+        COALESCE(p.bio, p.prompt) as bio,
+        (
+            SELECT up.photo_url
+            FROM user_photos up
+            WHERE up.user_id = p.id
+            ORDER BY up.is_main DESC, up.id ASC
+            LIMIT 1
+        ) as main_photo_url,
+        p.frame_id
+    FROM profiles p
+    WHERE p.id = target_user_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_matched_user_profile"("target_user_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."get_matched_user_profile"("target_user_id" "uuid") IS 'Returns profile data for a user you have a match_request relationship with. Works even if user is not currently on the map.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."get_my_communities"() RETURNS TABLE("community_id" "uuid", "name" "text", "description" "text", "cover_image_url" "text", "icon_url" "text", "member_count" integer, "category" "public"."community_category_enum", "my_role" "public"."member_role_enum", "is_verified" boolean, "created_at" timestamp with time zone)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    AS $$
+    SELECT 
+        c.id,
+        c.name,
+        c.description,
+        c.cover_image_url,
+        c.icon_url,
+        c.member_count,
+        c.category,
+        cm.role,
+        c.is_verified,
+        c.created_at
+    FROM communities c
+    JOIN community_members cm ON c.id = cm.community_id
+    WHERE cm.user_id = auth.uid()
+    ORDER BY cm.joined_at DESC;
+$$;
+
+
+ALTER FUNCTION "public"."get_my_communities"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_my_groups"() RETURNS TABLE("group_id" "uuid", "name" "text", "description" "text", "cover_image_url" "text", "member_count" integer, "my_role" "public"."member_role_enum", "is_private" boolean, "created_at" timestamp with time zone)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    AS $$
+    SELECT 
+        g.id,
+        g.name,
+        g.description,
+        g.cover_image_url,
+        g.member_count,
+        gm.role,
+        g.is_private,
+        g.created_at
+    FROM groups g
+    JOIN group_members gm ON g.id = gm.group_id
+    WHERE gm.user_id = auth.uid()
+    ORDER BY gm.joined_at DESC;
+$$;
+
+
+ALTER FUNCTION "public"."get_my_groups"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_my_hosted_events"("p_user_id" "uuid") RETURNS TABLE("id" "uuid", "event_name" "text", "category" "public"."event_category_enum", "location_name" "text", "time_start" timestamp with time zone, "time_end" timestamp with time zone, "status" "public"."event_status_enum", "attendee_count" bigint, "avg_rating" numeric)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  SELECT 
+    e.id,
+    e.event_name,
+    e.category,
+    e.location_name,
+    e.time_start,
+    e.time_end,
+    e.status,
+    (SELECT COUNT(*) FROM event_applications ea 
+     WHERE ea.event_id = e.id AND ea.status = 'approved') as attendee_count,
+    (SELECT ROUND(AVG(er.rating), 1) FROM event_ratings er 
+     WHERE er.event_id = e.id) as avg_rating
+  FROM events e
+  WHERE e.host_id = p_user_id
+    AND e.status IN ('finished', 'expired')
+  ORDER BY e.time_start DESC
+  LIMIT 20;
+$$;
+
+
+ALTER FUNCTION "public"."get_my_hosted_events"("p_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_my_joined_events"("p_user_id" "uuid") RETURNS TABLE("id" "uuid", "event_name" "text", "category" "public"."event_category_enum", "location_name" "text", "time_start" timestamp with time zone, "time_end" timestamp with time zone, "host_id" "uuid", "host_name" "text")
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+    SELECT 
+        e.id,
+        e.event_name,
+        e.category,
+        e.location_name,
+        e.time_start,
+        e.time_end,
+        e.host_id,
+        p.full_name as host_name
+    FROM event_applications ea
+    JOIN events e ON e.id = ea.event_id
+    LEFT JOIN profiles p ON p.id = e.host_id
+    WHERE ea.applicant_id = p_user_id
+    AND ea.status = 'approved'
+    AND e.status IN ('finished', 'expired')
+    ORDER BY e.time_start DESC
+    LIMIT 50;
+$$;
+
+
+ALTER FUNCTION "public"."get_my_joined_events"("p_user_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."get_my_nearby_events"() RETURNS TABLE("id" "uuid", "host_id" "uuid", "event_name" "text", "category" "public"."event_category_enum", "event_description" "text", "location" "public"."geography", "location_name" "text", "time_start" timestamp with time zone, "time_end" timestamp with time zone, "capacity" integer, "gender_allowed" "public"."gender_filter_enum", "age_min" integer, "age_max" integer, "status" "public"."event_status_enum", "created_at" timestamp with time zone, "updated_at" timestamp with time zone, "latitude" double precision, "longitude" double precision, "distance_km" numeric, "attendee_count" bigint)
@@ -834,8 +2845,44 @@ $$;
 ALTER FUNCTION "public"."get_my_nearby_events"() OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "public"."event_status_enum" DEFAULT 'active'::"public"."event_status_enum") RETURNS TABLE("id" "uuid", "host_id" "uuid", "event_name" "text", "category" "public"."event_category_enum", "event_description" "text", "location_name" "text", "time_start" timestamp with time zone, "time_end" timestamp with time zone, "capacity" integer, "gender_allowed" "public"."gender_filter_enum", "age_min" integer, "age_max" integer, "status" "public"."event_status_enum", "created_at" timestamp with time zone, "updated_at" timestamp with time zone, "latitude" double precision, "longitude" double precision, "distance_meters" double precision)
+CREATE OR REPLACE FUNCTION "public"."get_my_pending_group_invites"() RETURNS TABLE("invite_id" "uuid", "group_id" "uuid", "group_name" "text", "group_description" "text", "group_cover_image_url" "text", "group_member_count" integer, "invited_by_id" "uuid", "invited_by_name" "text", "invited_by_photo_url" "text", "role" "public"."member_role_enum", "message" "text", "created_at" timestamp with time zone)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+    SELECT 
+        gi.id as invite_id,
+        gi.group_id,
+        g.name as group_name,
+        g.description as group_description,
+        g.cover_image_url as group_cover_image_url,
+        g.member_count as group_member_count,
+        gi.invited_by as invited_by_id,
+        p.full_name as invited_by_name,
+        (
+            SELECT up.photo_url 
+            FROM user_photos up 
+            WHERE up.user_id = gi.invited_by 
+            AND up.is_main = true 
+            LIMIT 1
+        ) as invited_by_photo_url,
+        gi.role,
+        gi.message,
+        gi.created_at
+    FROM group_invites gi
+    JOIN groups g ON g.id = gi.group_id
+    JOIN profiles p ON p.id = gi.invited_by
+    WHERE gi.invited_user_id = auth.uid()
+    AND gi.status = 'pending'
+    ORDER BY gi.created_at DESC;
+$$;
+
+
+ALTER FUNCTION "public"."get_my_pending_group_invites"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer DEFAULT 30000, "p_status" "text" DEFAULT 'active'::"text") RETURNS TABLE("id" "uuid", "host_id" "uuid", "event_name" "text", "category" "public"."event_category_enum", "event_description" "text", "location_name" "text", "latitude" double precision, "longitude" double precision, "time_start" timestamp with time zone, "time_end" timestamp with time zone, "capacity" integer, "gender_allowed" "public"."gender_filter_enum", "age_min" integer, "age_max" integer, "status" "public"."event_status_enum", "event_type" "public"."event_type_enum", "fuzzy_radius_meters" integer, "group_id" "uuid", "community_id" "uuid", "created_at" timestamp with time zone, "updated_at" timestamp with time zone, "accepted_count" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   RETURN QUERY
@@ -846,6 +2893,9 @@ BEGIN
     e.category,
     e.event_description,
     e.location_name,
+    -- Extract lat/lng from PostGIS location column
+    ST_Y(e.location::geometry) as latitude,
+    ST_X(e.location::geometry) as longitude,
     e.time_start,
     e.time_end,
     e.capacity,
@@ -853,34 +2903,326 @@ BEGIN
     e.age_min,
     e.age_max,
     e.status,
+    e.event_type,
+    COALESCE(e.fuzzy_radius_meters, 500)::INTEGER as fuzzy_radius_meters,
+    e.group_id,
+    e.community_id,
     e.created_at,
     e.updated_at,
-    -- Extract latitude and longitude from PostGIS geography
-    ST_Y(e.location::geometry) as latitude,
-    ST_X(e.location::geometry) as longitude,
-    -- Calculate distance in meters
-    ST_Distance(
-      e.location,
-      ST_SetSRID(ST_MakePoint(p_user_lng, p_user_lat), 4326)::geography
-    ) as distance_meters
+    COALESCE((
+      SELECT COUNT(*)::BIGINT 
+      FROM event_applications ea 
+      WHERE ea.event_id = e.id AND ea.status = 'approved'
+    ), 0::BIGINT) as accepted_count
   FROM events e
-  WHERE e.status = p_status
-    AND e.time_end >= now()
-    -- Filter by distance using ST_DWithin (more efficient than ST_Distance for filtering)
+  WHERE 
+    e.status = p_status::event_status_enum
+    AND e.location IS NOT NULL
     AND ST_DWithin(
-      e.location,
+      e.location::geography,
       ST_SetSRID(ST_MakePoint(p_user_lng, p_user_lat), 4326)::geography,
       p_radius_meters
-    )
-  ORDER BY distance_meters ASC, e.time_start ASC;
+    );
 END;
 $$;
 
 
-ALTER FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "public"."event_status_enum") OWNER TO "postgres";
+ALTER FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "text") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."get_profile_full_for_user"("target_user" "uuid") RETURNS TABLE("id" "uuid", "full_name" "text", "age" integer, "gender" "text", "gender_subtype" "text", "show_gender_on_profile" boolean, "sexual_orientation" "text", "show_orientation_on_profile" boolean, "orientation_custom" "text", "brings_you" "text", "interested_in" "text"[], "age_pref_min" integer, "age_pref_max" integer, "height_cm" integer, "education" "text", "institution" "text", "bio" "text", "prompt_answers" "jsonb", "today_frame" "uuid", "main_photo_url" "text", "last_seen" timestamp with time zone, "discoverable" boolean, "onboarding_completed" boolean, "created_at" timestamp with time zone, "updated_at" timestamp with time zone)
+CREATE OR REPLACE FUNCTION "public"."get_profile_access_level"("p_viewer_id" "uuid", "p_target_id" "uuid") RETURNS "text"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_visibility profile_visibility_enum;
+BEGIN
+    -- 1. Self always gets full access
+    IF p_viewer_id = p_target_id THEN
+        RETURN 'full';
+    END IF;
+    
+    -- 2. Blocked = no access
+    IF have_blocked_each_other(p_viewer_id, p_target_id) THEN
+        RETURN 'none';
+    END IF;
+    
+    -- 3. Matched (accepted) = always full access
+    IF EXISTS (
+        SELECT 1 FROM match_requests mr
+        WHERE mr.status = 'accepted'
+        AND ((mr.requester_id = p_viewer_id AND mr.target_id = p_target_id)
+            OR (mr.requester_id = p_target_id AND mr.target_id = p_viewer_id))
+    ) THEN
+        RETURN 'full';
+    END IF;
+    
+    -- 4. Check for valid viewing context
+    IF NOT (
+        -- Proximity (can see on map)
+        can_see_on_map(p_viewer_id, p_target_id) 
+        OR
+        -- Same finished event (both participated)
+        were_in_same_finished_event(p_viewer_id, p_target_id) 
+        OR
+        -- Same active event (both approved)
+        EXISTS (
+            SELECT 1 
+            FROM event_applications ea1
+            JOIN event_applications ea2 ON ea1.event_id = ea2.event_id
+            JOIN events e ON e.id = ea1.event_id
+            WHERE ea1.applicant_id = p_viewer_id
+            AND ea2.applicant_id = p_target_id
+            AND ea1.status = 'approved'
+            AND ea2.status = 'approved'
+            AND e.time_end > now()
+            AND e.status = 'active'
+        )
+        OR
+        -- Viewer is host, target is approved in viewer's active event
+        EXISTS (
+            SELECT 1 
+            FROM events e
+            JOIN event_applications ea ON ea.event_id = e.id
+            WHERE e.host_id = p_viewer_id
+            AND ea.applicant_id = p_target_id
+            AND ea.status = 'approved'
+            AND e.status = 'active'
+        )
+        OR
+        -- Target is host, viewer is approved in target's active event
+        EXISTS (
+            SELECT 1 
+            FROM events e
+            JOIN event_applications ea ON ea.event_id = e.id
+            WHERE e.host_id = p_target_id
+            AND ea.applicant_id = p_viewer_id
+            AND ea.status = 'approved'
+            AND e.status = 'active'
+        )
+        OR
+        -- Same group
+        are_in_same_group(p_viewer_id, p_target_id) 
+        OR
+        -- Same community
+        are_in_same_community(p_viewer_id, p_target_id)
+        OR
+        -- Same community event (finished)
+        were_in_same_community_event(p_viewer_id, p_target_id)
+        OR
+        -- Pending match request (either direction)
+        EXISTS (
+            SELECT 1 FROM match_requests mr
+            WHERE mr.status = 'pending'
+            AND ((mr.requester_id = p_viewer_id AND mr.target_id = p_target_id)
+                OR (mr.requester_id = p_target_id AND mr.target_id = p_viewer_id))
+        )
+        OR
+        -- Host viewing applicant (any status)
+        EXISTS (
+            SELECT 1 
+            FROM event_applications ea
+            JOIN events e ON e.id = ea.event_id
+            WHERE ea.applicant_id = p_target_id
+            AND e.host_id = p_viewer_id
+        )
+        OR
+        -- Applicant viewing host
+        EXISTS (
+            SELECT 1 
+            FROM event_applications ea
+            JOIN events e ON e.id = ea.event_id
+            WHERE ea.applicant_id = p_viewer_id
+            AND e.host_id = p_target_id
+        )
+        OR
+        -- Invited to event - can see host
+        EXISTS (
+            SELECT 1
+            FROM event_invites ei
+            JOIN events e ON e.id = ei.event_id
+            WHERE ei.invited_user_id = p_viewer_id
+            AND e.host_id = p_target_id
+        )
+        OR
+        -- Invited to event - can see inviter
+        EXISTS (
+            SELECT 1
+            FROM event_invites ei
+            WHERE ei.invited_user_id = p_viewer_id
+            AND ei.invited_by = p_target_id
+        )
+    ) THEN
+        RETURN 'none';
+    END IF;
+    
+    -- 5. Has valid context - check visibility setting
+    SELECT profile_visibility INTO v_visibility
+    FROM profiles WHERE id = p_target_id;
+    
+    IF v_visibility = 'public' THEN
+        RETURN 'full';
+    ELSE
+        RETURN 'limited';
+    END IF;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_profile_access_level"("p_viewer_id" "uuid", "p_target_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."get_profile_access_level"("p_viewer_id" "uuid", "p_target_id" "uuid") IS 'Returns access level for viewing a profile: full, limited, or none';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."get_profile_for_viewer"("p_target_user_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_access_level text;
+    v_result jsonb;
+    v_viewer_id uuid := auth.uid();
+BEGIN
+    IF v_viewer_id IS NULL THEN
+        RAISE EXCEPTION 'not authenticated';
+    END IF;
+    
+    v_access_level := get_profile_access_level(v_viewer_id, p_target_user_id);
+    
+    IF v_access_level = 'none' THEN
+        RETURN NULL;
+    END IF;
+    
+    -- LIMITED: main_photo, name, age, bio, looking_for, marital_status ONLY
+    IF v_access_level = 'limited' THEN
+        SELECT jsonb_build_object(
+            'access_level', 'limited',
+            'user_id', p.id,
+            'full_name', p.full_name,
+            'age', p.age,
+            'bio', COALESCE(p.bio, p.prompt),
+            'looking_for', p.looking_for::text[],
+            'marital_status', p.marital_status::text,
+            'main_photo_url', (
+                SELECT up.photo_url 
+                FROM user_photos up
+                WHERE up.user_id = p.id
+                ORDER BY up.is_main DESC, up.id ASC 
+                LIMIT 1
+            )
+        ) INTO v_result
+        FROM profiles p 
+        WHERE p.id = p_target_user_id;
+        
+        RETURN v_result;
+    END IF;
+    
+    -- FULL: everything (rest of the function stays the same)
+    SELECT jsonb_build_object(
+        'access_level', 'full',
+        'user_id', p.id,
+        'full_name', p.full_name,
+        'age', p.age,
+        'bio', COALESCE(p.bio, p.prompt),
+        'looking_for', p.looking_for::text[],
+        'frame_id', p.frame_id,
+        'gender', p.gender,
+        'gender_subtype', p.gender_subtype,
+        'sexual_orientation', p.sexual_orientation::text,
+        'show_gender_on_profile', p.show_gender_on_profile,
+        'show_orientation_on_profile', p.show_orientation_on_profile,
+        'orientation_custom', p.orientation_custom,
+        'height_cm', p.height_cm,
+        'education', p.education,
+        'institution', p.institution,
+        'prompt_answers', p.prompt_answers,
+        'marital_status', p.marital_status::text,
+        'vehicles', p.vehicles::text[],
+        'hometown', p.hometown,
+        'values', p.values::text[],
+        'main_photo_url', (
+            SELECT up.photo_url 
+            FROM user_photos up
+            WHERE up.user_id = p.id
+            ORDER BY up.is_main DESC, up.id ASC 
+            LIMIT 1
+        ),
+        'photos', COALESCE((
+            SELECT jsonb_agg(jsonb_build_object(
+                'id', up.id,
+                'photo_url', up.photo_url,
+                'is_main', up.is_main,
+                'created_at', up.created_at
+            ) ORDER BY up.is_main DESC, up.created_at ASC)
+            FROM user_photos up 
+            WHERE up.user_id = p.id
+        ), '[]'::jsonb),
+        'active_frames', COALESCE((
+            SELECT jsonb_agg(jsonb_build_object(
+                'id', f.id,
+                'media_url', f.media_url,
+                'caption', f.caption,
+                'media_kind', f.media_kind,
+                'created_at', f.created_at,
+                'expires_at', f.expires_at
+            ) ORDER BY f.created_at DESC)
+            FROM frames f
+            WHERE f.user_id = p.id
+            AND f.expires_at > now()
+            AND f.is_expired = false
+        ), '[]'::jsonb),
+        'lifestyle', (
+            SELECT jsonb_build_object(
+                'drinking', l.drinking,
+                'smoking', l.smoking,
+                'zodiac', l.zodiac,
+                'religion', l.religion,
+                'politics', l.politics,
+                'workout', l.workout,
+                'communication', l.communication,
+                'love_language', l.love_language,
+                'pets', l.pets,
+                'kids', l.kids,
+                'communities', l.communities
+            )
+            FROM lifestyle l 
+            WHERE l.user_id = p.id
+        ),
+        'hobbies', COALESCE((
+            SELECT jsonb_agg(hm.label ORDER BY hm.label)
+            FROM user_hobbies uh
+            JOIN hobbies_master hm ON uh.hobby_id = hm.id
+            WHERE uh.user_id = p.id
+        ), '[]'::jsonb),
+        'languages', COALESCE((
+            SELECT jsonb_agg(jsonb_build_object(
+                'id', lm.id, 
+                'code', lm.code, 
+                'label', lm.label
+            ) ORDER BY lm.label)
+            FROM user_languages ul
+            JOIN languages_master lm ON ul.language_id = lm.id
+            WHERE ul.user_id = p.id
+        ), '[]'::jsonb)
+    ) INTO v_result
+    FROM profiles p 
+    WHERE p.id = p_target_user_id;
+    
+    RETURN v_result;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_profile_for_viewer"("p_target_user_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."get_profile_for_viewer"("p_target_user_id" "uuid") IS 'Unified profile fetch with visibility control. Returns full or limited profile data based on access level.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."get_profile_full_for_user"("target_user" "uuid") RETURNS TABLE("id" "uuid", "full_name" "text", "age" integer, "gender" "text", "gender_subtype" "text", "show_gender_on_profile" boolean, "sexual_orientation" "text", "show_orientation_on_profile" boolean, "orientation_custom" "text", "interested_in" "text"[], "age_pref_min" integer, "age_pref_max" integer, "height_cm" integer, "education" "text", "institution" "text", "bio" "text", "prompt_answers" "jsonb", "today_frame" "uuid", "main_photo_url" "text", "last_seen" timestamp with time zone, "discoverable" boolean, "onboarding_completed" boolean, "created_at" timestamp with time zone, "updated_at" timestamp with time zone, "marital_status" "text", "vehicles" "text"[], "hometown" "text", "looking_for" "text"[], "values" "text"[])
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_catalog', 'auth'
     AS $$
@@ -891,7 +3233,6 @@ BEGIN
        RAISE EXCEPTION 'not authenticated';
     END IF;
 
-    -- if I'm not them, I must be in accepted match with them
     IF caller <> target_user AND NOT public.can_view_full(caller, target_user) THEN
        RAISE EXCEPTION 'not authorized to view full profile';
     END IF;
@@ -907,7 +3248,6 @@ BEGIN
       p.sexual_orientation::text,
       p.show_orientation_on_profile,
       p.orientation_custom,
-      p.brings_you::text,
       p.interested_in::text[],
       p.age_pref_min,
       p.age_pref_max,
@@ -929,7 +3269,12 @@ BEGIN
       p.discoverable,
       p.onboarding_completed,
       p.created_at,
-      p.updated_at
+      p.updated_at,
+      p.marital_status::text,
+      p.vehicles::text[],
+      p.hometown,
+      p.looking_for::text[],
+      p.values::text[]
     FROM public.profiles p
     WHERE p.id = target_user;
 END;
@@ -944,20 +3289,17 @@ CREATE OR REPLACE FUNCTION "public"."get_profile_if_matched"("target" "uuid") RE
     SET "search_path" TO 'public', 'pg_temp'
     AS $$
 BEGIN
-    -- Check auth first for clearer error
     IF auth.uid() IS NULL THEN
         RAISE EXCEPTION 'not authenticated';
     END IF;
 
-    -- Check for full-profile match AND no blocks
     IF NOT EXISTS(
         SELECT 1 FROM match_requests mr
         WHERE mr.status = 'accepted'
-        AND mr.connection_visibility = 'full_profile'
         AND ((mr.requester_id = auth.uid() AND mr.target_id = target)
             OR (mr.requester_id = target AND mr.target_id = auth.uid()))
     ) OR have_blocked_each_other(auth.uid(), target) THEN
-        RAISE EXCEPTION 'no access: match not accepted, is blind connection, or users blocked';
+        RAISE EXCEPTION 'no access: match not accepted or users blocked';
     END IF;
 
     RETURN QUERY
@@ -967,7 +3309,7 @@ BEGIN
         p.age,
         p.gender,
         p.sexual_orientation::text,
-        COALESCE(p.bio, p.prompt) as bio,  -- Fallback to prompt if bio is null
+        COALESCE(p.bio, p.prompt) as bio,
         p.height_cm,
         p.education,
         p.prompt_answers,
@@ -990,7 +3332,7 @@ BEGIN
         END as lifestyle,
         COALESCE(
             ARRAY(
-                SELECT hm.label  -- FIX: use 'label' not 'hobby_name'
+                SELECT hm.label
                 FROM user_hobbies uh
                 JOIN hobbies_master hm ON uh.hobby_id = hm.id
                 WHERE uh.user_id = p.id
@@ -1053,6 +3395,100 @@ $$;
 ALTER FUNCTION "public"."get_profile_preview_for_user"("target_user" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."get_user_active_frames"("target_user_id" "uuid") RETURNS TABLE("id" "uuid", "media_url" "text", "caption" "text", "media_kind" "public"."media_type", "created_at" timestamp with time zone, "expires_at" timestamp with time zone)
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_access_level text;
+BEGIN
+    v_access_level := get_profile_access_level(auth.uid(), target_user_id);
+    
+    -- Frames ONLY visible with FULL access
+    IF v_access_level != 'full' THEN
+        RETURN;
+    END IF;
+    
+    RETURN QUERY
+    SELECT 
+        f.id,
+        f.media_url,
+        f.caption,
+        f.media_kind,
+        f.created_at,
+        f.expires_at
+    FROM frames f
+    WHERE f.user_id = target_user_id
+    AND f.expires_at > now()
+    AND f.is_expired = false
+    ORDER BY f.created_at DESC;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_user_active_frames"("target_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_user_preview_extended"("target_user_id" "uuid") RETURNS TABLE("user_id" "uuid", "full_name" "text", "age" integer, "bio" "text", "sexual_orientation" "text", "looking_for" "text"[], "main_photo_url" "text", "frame_id" "uuid")
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    caller uuid := auth.uid();
+BEGIN
+    -- Must be authenticated
+    IF caller IS NULL THEN
+        RAISE EXCEPTION 'not authenticated';
+    END IF;
+    
+    -- Must be able to see on map (discoverable, in range, not blocked)
+    IF NOT can_view_preview(caller, target_user_id) THEN
+        RETURN; -- Return empty if can't view
+    END IF;
+    
+    RETURN QUERY
+    SELECT 
+        p.id as user_id,
+        p.full_name,
+        p.age,
+        COALESCE(p.bio, p.prompt) as bio,
+        p.sexual_orientation::text,
+        -- Get looking_for from latest user_modes
+        (
+            SELECT ARRAY(
+                SELECT unnest(
+                    CASE 
+                        WHEN um.mode = 'dating' THEN um.looking_for_date::text[]
+                        ELSE um.looking_for_friend::text[]
+                    END
+                )
+            )
+            FROM user_modes um
+            WHERE um.user_id = p.id
+            ORDER BY um.created_at DESC
+            LIMIT 1
+        ) as looking_for,
+        (
+            SELECT up.photo_url
+            FROM user_photos up
+            WHERE up.user_id = p.id
+            ORDER BY up.is_main DESC, up.id ASC
+            LIMIT 1
+        ) as main_photo_url,
+        p.frame_id
+    FROM profiles p
+    WHERE p.id = target_user_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_user_preview_extended"("target_user_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."get_user_preview_extended"("target_user_id" "uuid") IS 'Returns extended preview data for a user visible on the map. Includes sexual_orientation and looking_for preferences.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."handle_event_application_approval"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -1104,6 +3540,51 @@ $$;
 ALTER FUNCTION "public"."handle_event_application_approval"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."handle_group_invite_acceptance"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+    v_current_count INTEGER;
+    v_max_members INTEGER;
+BEGIN
+    -- Only proceed if status changed to 'accepted'
+    IF NEW.status = 'accepted' AND (OLD.status IS NULL OR OLD.status != 'accepted') THEN
+        -- Set responded_at
+        NEW.responded_at := now();
+        
+        -- Check if group is at capacity
+        SELECT g.member_count, g.max_members 
+        INTO v_current_count, v_max_members
+        FROM groups g WHERE g.id = NEW.group_id;
+        
+        IF v_current_count >= v_max_members THEN
+            RAISE EXCEPTION 'Group is at full capacity';
+        END IF;
+        
+        -- Add user to group_members with the specified role
+        INSERT INTO group_members (group_id, user_id, role)
+        VALUES (NEW.group_id, NEW.invited_user_id, NEW.role)
+        ON CONFLICT (group_id, user_id) DO NOTHING;
+        
+        -- The trigger trg_sync_group_conversation_member will handle
+        -- adding the user to the conversation
+    END IF;
+    
+    -- Set responded_at for declined as well
+    IF NEW.status = 'declined' AND OLD.status = 'pending' THEN
+        NEW.responded_at := now();
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."handle_group_invite_acceptance"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."handle_lifestyle_updated_at"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
@@ -1123,29 +3604,12 @@ CREATE OR REPLACE FUNCTION "public"."handle_match_acceptance"() RETURNS "trigger
     AS $$
 DECLARE
     v_conversation_id uuid;
-    v_conversation_type conversation_type_enum;
 BEGIN
-    -- Only proceed if status changed to accepted and chat is allowed
-    IF NEW.status = 'accepted' AND NEW.chat_allowed = true AND 
-       (OLD.status IS NULL OR OLD.status != 'accepted') THEN
-        
-        -- Determine conversation type based on match mode and visibility
-        IF NEW.match_mode = 'dating' THEN
-            IF NEW.connection_visibility = 'full_profile' THEN
-                v_conversation_type := 'dating_match';
-            ELSE
-                v_conversation_type := 'blind_date';
-            END IF;
-        ELSE -- friend mode
-            v_conversation_type := 'friend_match';
-        END IF;
-        
-        -- Create conversation
+    IF NEW.status = 'accepted' AND (OLD.status IS NULL OR OLD.status != 'accepted') THEN
         INSERT INTO conversations (type, match_request_id)
-        VALUES (v_conversation_type, NEW.id)
+        VALUES ('match', NEW.id)
         RETURNING id INTO v_conversation_id;
         
-        -- Add both users as members
         INSERT INTO conversation_members (conversation_id, user_id)
         VALUES 
             (v_conversation_id, NEW.requester_id),
@@ -1205,6 +3669,156 @@ $_$;
 ALTER FUNCTION "public"."haversine_km"("lat1" numeric, "lon1" numeric, "lat2" numeric, "lon2" numeric) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."is_community_member_direct"("p_community_id" "uuid", "p_user_id" "uuid") RETURNS boolean
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$ SELECT EXISTS (SELECT 1 FROM community_members WHERE community_id = p_community_id AND user_id = p_user_id); $$;
+
+
+ALTER FUNCTION "public"."is_community_member_direct"("p_community_id" "uuid", "p_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."is_group_member_direct"("p_group_id" "uuid", "p_user_id" "uuid") RETURNS boolean
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$ SELECT EXISTS (SELECT 1 FROM group_members WHERE group_id = p_group_id AND user_id = p_user_id); $$;
+
+
+ALTER FUNCTION "public"."is_group_member_direct"("p_group_id" "uuid", "p_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."is_matched_with"("other_user_id" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM match_requests mr
+    WHERE mr.status = 'accepted'
+    AND (
+      (mr.requester_id = auth.uid() AND mr.target_id = other_user_id)
+      OR
+      (mr.requester_id = other_user_id AND mr.target_id = auth.uid())
+    )
+  );
+$$;
+
+
+ALTER FUNCTION "public"."is_matched_with"("other_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."join_community_by_code"("p_invite_code" "uuid") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_community_id UUID;
+    v_member_count INTEGER;
+    v_max_members INTEGER;
+BEGIN
+    SELECT id, member_count, max_members 
+    INTO v_community_id, v_member_count, v_max_members
+    FROM communities
+    WHERE invite_code = p_invite_code;
+    
+    IF v_community_id IS NULL THEN
+        RAISE EXCEPTION 'Invalid invite code';
+    END IF;
+    
+    IF v_member_count >= v_max_members THEN
+        RAISE EXCEPTION 'Community is full';
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM community_members WHERE community_id = v_community_id AND user_id = auth.uid()) THEN
+        RAISE EXCEPTION 'Already a member of this community';
+    END IF;
+    
+    INSERT INTO community_members (community_id, user_id, role)
+    VALUES (v_community_id, auth.uid(), 'member');
+    
+    RETURN v_community_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."join_community_by_code"("p_invite_code" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."join_event_direct"("p_event_id" "uuid") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+    v_event RECORD;
+    v_application_id UUID;
+    v_can_join BOOLEAN;
+    v_join_method TEXT;
+    v_reason TEXT;
+BEGIN
+    -- Check if can join
+    SELECT * INTO v_can_join, v_join_method, v_reason
+    FROM can_join_event(v_user_id, p_event_id);
+    
+    IF NOT v_can_join THEN
+        RAISE EXCEPTION '%', v_reason;
+    END IF;
+    
+    IF v_join_method != 'direct' THEN
+        RAISE EXCEPTION 'This event requires application or invite, use appropriate method';
+    END IF;
+    
+    -- Create approved application
+    INSERT INTO event_applications (event_id, applicant_id, status)
+    VALUES (p_event_id, v_user_id, 'approved')
+    ON CONFLICT (event_id, applicant_id) 
+    DO UPDATE SET status = 'approved', updated_at = now()
+    RETURNING id INTO v_application_id;
+    
+    RETURN v_application_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."join_event_direct"("p_event_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."join_group_by_code"("p_invite_code" "uuid") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_group_id UUID;
+    v_member_count INTEGER;
+    v_max_members INTEGER;
+BEGIN
+    SELECT id, member_count, max_members 
+    INTO v_group_id, v_member_count, v_max_members
+    FROM groups
+    WHERE invite_code = p_invite_code;
+    
+    IF v_group_id IS NULL THEN
+        RAISE EXCEPTION 'Invalid invite code';
+    END IF;
+    
+    IF v_member_count >= v_max_members THEN
+        RAISE EXCEPTION 'Group is full';
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM group_members WHERE group_id = v_group_id AND user_id = auth.uid()) THEN
+        RAISE EXCEPTION 'Already a member of this group';
+    END IF;
+    
+    INSERT INTO group_members (group_id, user_id, role)
+    VALUES (v_group_id, auth.uid(), 'member');
+    
+    RETURN v_group_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."join_group_by_code"("p_invite_code" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."mark_all_expired_frames"() RETURNS TABLE("updated_count" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -1248,37 +3862,253 @@ $$;
 ALTER FUNCTION "public"."mark_expired_frames"() OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."should_reveal_blind_profile"("match_id" "uuid") RETURNS boolean
-    LANGUAGE "plpgsql" STABLE
+CREATE OR REPLACE FUNCTION "public"."mark_messages_read"("p_conversation_id" "uuid", "p_user_id" "uuid" DEFAULT "auth"."uid"()) RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
-DECLARE
-    v_blind_meet_time timestamptz;
-    v_connection_visibility connection_visibility_enum;
 BEGIN
-    -- Get the blind date details
-    SELECT blind_meet_time, connection_visibility
-    INTO v_blind_meet_time, v_connection_visibility
-    FROM match_requests
-    WHERE id = match_id;
+    -- Update last_read_at in conversation_members
+    UPDATE conversation_members
+    SET last_read_at = now()
+    WHERE conversation_id = p_conversation_id
+    AND user_id = p_user_id;
     
-    -- If not a blind connection, always reveal
-    IF v_connection_visibility != 'blind' THEN
-        RETURN true;
-    END IF;
-    
-    -- If no meet time set, don't reveal
-    IF v_blind_meet_time IS NULL THEN
-        RETURN false;
-    END IF;
-    
-    -- Reveal if the meeting time has passed (you can adjust the logic)
-    -- For now, simple: reveal after meeting time + 1 hour
-    RETURN now() > (v_blind_meet_time + interval '1 hour');
+    -- Insert read receipts for unread messages (optional granular tracking)
+    INSERT INTO message_reads (message_id, user_id, read_at)
+    SELECT m.id, p_user_id, now()
+    FROM messages m
+    WHERE m.conversation_id = p_conversation_id
+    AND m.sender_id != p_user_id
+    AND NOT EXISTS (
+        SELECT 1 FROM message_reads mr 
+        WHERE mr.message_id = m.id AND mr.user_id = p_user_id
+    )
+    ON CONFLICT (message_id, user_id) DO NOTHING;
 END;
 $$;
 
 
-ALTER FUNCTION "public"."should_reveal_blind_profile"("match_id" "uuid") OWNER TO "postgres";
+ALTER FUNCTION "public"."mark_messages_read"("p_conversation_id" "uuid", "p_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."remove_user_from_event_chat"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+BEGIN
+    -- Only proceed if status changed to cancelled or rejected (was approved before)
+    IF NEW.status IN ('cancelled', 'rejected') AND OLD.status = 'approved' THEN
+        -- Find the event group chat
+        SELECT id INTO v_conversation_id
+        FROM conversations
+        WHERE event_id = NEW.event_id AND type = 'event_group';
+        
+        IF v_conversation_id IS NOT NULL THEN
+            -- Remove from conversation
+            DELETE FROM conversation_members
+            WHERE conversation_id = v_conversation_id AND user_id = NEW.applicant_id;
+        END IF;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."remove_user_from_event_chat"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."send_match_request_full"("p_target_id" "uuid", "p_message" "text" DEFAULT NULL::"text", "p_origin_event_id" "uuid" DEFAULT NULL::"uuid", "p_origin_group_id" "uuid" DEFAULT NULL::"uuid", "p_origin_community_id" "uuid" DEFAULT NULL::"uuid") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+    v_can_send BOOLEAN;
+    v_reason TEXT;
+    v_context TEXT;
+    v_request_id UUID;
+BEGIN
+    SELECT * INTO v_can_send, v_reason, v_context
+    FROM can_send_match_request(v_user_id, p_target_id);
+    
+    IF NOT v_can_send THEN
+        RAISE EXCEPTION '%', v_reason;
+    END IF;
+    
+    INSERT INTO match_requests (
+        requester_id,
+        target_id,
+        status,
+        sender_message,
+        origin_event_id,
+        origin_group_id,
+        origin_community_id,
+        origin_context
+    )
+    VALUES (
+        v_user_id,
+        p_target_id,
+        'pending',
+        p_message,
+        p_origin_event_id,
+        p_origin_group_id,
+        p_origin_community_id,
+        v_context
+    )
+    RETURNING id INTO v_request_id;
+    
+    RETURN v_request_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."send_match_request_full"("p_target_id" "uuid", "p_message" "text", "p_origin_event_id" "uuid", "p_origin_group_id" "uuid", "p_origin_community_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."send_match_request_with_context"("p_target_id" "uuid", "p_message" "text" DEFAULT NULL::"text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_user_id UUID := auth.uid();
+    v_can_send BOOLEAN;
+    v_reason TEXT;
+    v_context TEXT;
+    v_request_id UUID;
+BEGIN
+    SELECT * INTO v_can_send, v_reason, v_context
+    FROM can_send_match_request(v_user_id, p_target_id);
+    
+    IF NOT v_can_send THEN
+        RAISE EXCEPTION '%', v_reason;
+    END IF;
+    
+    INSERT INTO match_requests (
+        requester_id,
+        target_id,
+        status,
+        sender_message,
+        origin_context
+    )
+    VALUES (
+        v_user_id,
+        p_target_id,
+        'pending',
+        p_message,
+        v_context
+    )
+    RETURNING id INTO v_request_id;
+    
+    RETURN v_request_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."send_match_request_with_context"("p_target_id" "uuid", "p_message" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."sync_community_conversation_member"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+BEGIN
+    SELECT id INTO v_conversation_id
+    FROM conversations
+    WHERE community_id = COALESCE(NEW.community_id, OLD.community_id) AND type = 'community_chat';
+    
+    IF v_conversation_id IS NOT NULL THEN
+        IF TG_OP = 'INSERT' THEN
+            INSERT INTO conversation_members (conversation_id, user_id)
+            VALUES (v_conversation_id, NEW.user_id)
+            ON CONFLICT DO NOTHING;
+        ELSIF TG_OP = 'DELETE' THEN
+            DELETE FROM conversation_members
+            WHERE conversation_id = v_conversation_id AND user_id = OLD.user_id;
+        END IF;
+    END IF;
+    
+    RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."sync_community_conversation_member"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."sync_group_conversation_member"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+    v_conversation_id UUID;
+BEGIN
+    SELECT id INTO v_conversation_id
+    FROM conversations
+    WHERE group_id = COALESCE(NEW.group_id, OLD.group_id) AND type = 'group_chat';
+    
+    IF v_conversation_id IS NOT NULL THEN
+        IF TG_OP = 'INSERT' THEN
+            INSERT INTO conversation_members (conversation_id, user_id)
+            VALUES (v_conversation_id, NEW.user_id)
+            ON CONFLICT DO NOTHING;
+        ELSIF TG_OP = 'DELETE' THEN
+            DELETE FROM conversation_members
+            WHERE conversation_id = v_conversation_id AND user_id = OLD.user_id;
+        END IF;
+    END IF;
+    
+    RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."sync_group_conversation_member"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."update_community_member_count"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE communities SET member_count = member_count + 1, updated_at = now()
+        WHERE id = NEW.community_id;
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        UPDATE communities SET member_count = GREATEST(0, member_count - 1), updated_at = now()
+        WHERE id = OLD.community_id;
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."update_community_member_count"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."update_group_member_count"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE groups SET member_count = member_count + 1, updated_at = now()
+        WHERE id = NEW.group_id;
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        UPDATE groups SET member_count = GREATEST(0, member_count - 1), updated_at = now()
+        WHERE id = OLD.group_id;
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."update_group_member_count"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."update_location_from_coords"() RETURNS "trigger"
@@ -1307,6 +4137,24 @@ $$;
 
 
 ALTER FUNCTION "public"."update_updated_at_column"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."update_user_location"("p_user_id" "uuid", "p_latitude" numeric, "p_longitude" numeric, "p_distance_meters" integer DEFAULT 4000) RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+    UPDATE profiles
+    SET 
+        lat = p_latitude,
+        lng = p_longitude,
+        distance_meters = p_distance_meters,
+        updated_at = now()
+    WHERE id = p_user_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."update_user_location"("p_user_id" "uuid", "p_latitude" numeric, "p_longitude" numeric, "p_distance_meters" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."validate_event_description_word_count"() RETURNS "trigger"
@@ -1362,6 +4210,79 @@ $$;
 
 ALTER FUNCTION "public"."validate_event_rating"() OWNER TO "postgres";
 
+
+CREATE OR REPLACE FUNCTION "public"."were_in_same_community_event"("p_user1" "uuid", "p_user2" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+    SELECT EXISTS (
+        SELECT 1 
+        FROM event_applications ea1
+        JOIN event_applications ea2 ON ea1.event_id = ea2.event_id
+        JOIN events e ON e.id = ea1.event_id
+        WHERE ea1.applicant_id = p_user1
+        AND ea2.applicant_id = p_user2
+        AND ea1.status = 'approved'
+        AND ea2.status = 'approved'
+        AND e.time_end < now()
+        AND e.event_type = 'community_event'
+    );
+$$;
+
+
+ALTER FUNCTION "public"."were_in_same_community_event"("p_user1" "uuid", "p_user2" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."were_in_same_finished_event"("p_user1" "uuid", "p_user2" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+    SELECT EXISTS (
+        -- Check if both users were approved participants in the same finished event
+        SELECT 1 
+        FROM event_applications ea1
+        JOIN event_applications ea2 ON ea1.event_id = ea2.event_id
+        JOIN events e ON e.id = ea1.event_id
+        WHERE ea1.applicant_id = p_user1
+        AND ea2.applicant_id = p_user2
+        AND ea1.status = 'approved'
+        AND ea2.status = 'approved'
+        AND e.time_end < now()  -- Event has finished
+        AND e.status IN ('finished', 'expired', 'active')  -- Valid completed events
+        
+        UNION
+        
+        -- Check if user1 is host and user2 was approved participant
+        SELECT 1
+        FROM events e
+        JOIN event_applications ea ON ea.event_id = e.id
+        WHERE e.host_id = p_user1
+        AND ea.applicant_id = p_user2
+        AND ea.status = 'approved'
+        AND e.time_end < now()
+        AND e.status IN ('finished', 'expired', 'active')
+        
+        UNION
+        
+        -- Check if user2 is host and user1 was approved participant
+        SELECT 1
+        FROM events e
+        JOIN event_applications ea ON ea.event_id = e.id
+        WHERE e.host_id = p_user2
+        AND ea.applicant_id = p_user1
+        AND ea.status = 'approved'
+        AND e.time_end < now()
+        AND e.status IN ('finished', 'expired', 'active')
+    );
+$$;
+
+
+ALTER FUNCTION "public"."were_in_same_finished_event"("p_user1" "uuid", "p_user2" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."were_in_same_finished_event"("p_user1" "uuid", "p_user2" "uuid") IS 'Checks if two users were both participants (including host) in the same finished event. Updated to include hosts who are not in event_applications.';
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
@@ -1378,6 +4299,60 @@ ALTER TABLE ONLY "public"."blocks" FORCE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."blocks" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."communities" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "description" "text",
+    "cover_image_url" "text",
+    "icon_url" "text",
+    "created_by" "uuid" NOT NULL,
+    "min_members" integer DEFAULT 50,
+    "max_members" integer DEFAULT 1000,
+    "member_count" integer DEFAULT 1,
+    "category" "public"."community_category_enum" DEFAULT 'other'::"public"."community_category_enum",
+    "is_verified" boolean DEFAULT false,
+    "is_private" boolean DEFAULT false,
+    "invite_code" "uuid" DEFAULT "gen_random_uuid"(),
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "communities_max_members_limit" CHECK ((("max_members" <= 1000) AND ("max_members" >= "min_members"))),
+    CONSTRAINT "communities_member_count_valid" CHECK (("member_count" >= 0)),
+    CONSTRAINT "communities_name_length" CHECK ((("char_length"("name") >= 2) AND ("char_length"("name") <= 100)))
+);
+
+
+ALTER TABLE "public"."communities" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."community_announcements" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "community_id" "uuid" NOT NULL,
+    "author_id" "uuid" NOT NULL,
+    "title" "text",
+    "content" "text" NOT NULL,
+    "pinned" boolean DEFAULT false,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "announcements_content_length" CHECK ((("char_length"("content") >= 1) AND ("char_length"("content") <= 5000)))
+);
+
+
+ALTER TABLE "public"."community_announcements" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."community_members" (
+    "community_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "role" "public"."member_role_enum" DEFAULT 'member'::"public"."member_role_enum",
+    "joined_at" timestamp with time zone DEFAULT "now"(),
+    "muted_announcements" boolean DEFAULT false,
+    "muted_chat" boolean DEFAULT false
+);
+
+
+ALTER TABLE "public"."community_members" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."conversation_members" (
@@ -1399,7 +4374,9 @@ CREATE TABLE IF NOT EXISTS "public"."conversations" (
     "event_id" "uuid",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "conversations_check" CHECK (((("type" = ANY (ARRAY['dating_match'::"public"."conversation_type_enum", 'blind_date'::"public"."conversation_type_enum", 'friend_match'::"public"."conversation_type_enum"])) AND ("match_request_id" IS NOT NULL) AND ("event_id" IS NULL)) OR (("type" = 'event_group'::"public"."conversation_type_enum") AND ("event_id" IS NOT NULL) AND ("match_request_id" IS NULL))))
+    "group_id" "uuid",
+    "community_id" "uuid",
+    CONSTRAINT "conversations_check" CHECK (((("type" = 'match'::"public"."conversation_type_enum") AND ("match_request_id" IS NOT NULL) AND ("event_id" IS NULL) AND ("group_id" IS NULL) AND ("community_id" IS NULL)) OR (("type" = 'event_group'::"public"."conversation_type_enum") AND ("event_id" IS NOT NULL) AND ("match_request_id" IS NULL) AND ("group_id" IS NULL) AND ("community_id" IS NULL)) OR (("type" = 'group_chat'::"public"."conversation_type_enum") AND ("group_id" IS NOT NULL) AND ("match_request_id" IS NULL) AND ("event_id" IS NULL) AND ("community_id" IS NULL)) OR (("type" = 'community_chat'::"public"."conversation_type_enum") AND ("community_id" IS NOT NULL) AND ("match_request_id" IS NULL) AND ("event_id" IS NULL) AND ("group_id" IS NULL))))
 );
 
 
@@ -1413,11 +4390,29 @@ CREATE TABLE IF NOT EXISTS "public"."event_applications" (
     "status" "public"."event_application_status_enum" DEFAULT 'pending'::"public"."event_application_status_enum" NOT NULL,
     "add_as_friend" boolean DEFAULT false NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "message" "text"
 );
 
 
 ALTER TABLE "public"."event_applications" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."event_invites" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "event_id" "uuid" NOT NULL,
+    "invited_by" "uuid" NOT NULL,
+    "invited_user_id" "uuid",
+    "group_id" "uuid",
+    "community_id" "uuid",
+    "status" "text" DEFAULT 'pending'::"text",
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "invite_has_target" CHECK ((("invited_user_id" IS NOT NULL) OR ("group_id" IS NOT NULL) OR ("community_id" IS NOT NULL))),
+    CONSTRAINT "invite_status_valid" CHECK (("status" = ANY (ARRAY['pending'::"text", 'accepted'::"text", 'declined'::"text"])))
+);
+
+
+ALTER TABLE "public"."event_invites" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."event_ratings" (
@@ -1452,10 +4447,21 @@ CREATE TABLE IF NOT EXISTS "public"."events" (
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "latitude" double precision,
     "longitude" double precision,
+    "visibility" "public"."event_visibility_enum" DEFAULT 'public'::"public"."event_visibility_enum",
+    "fuzzy_radius_meters" integer DEFAULT 500,
+    "invite_code" "uuid" DEFAULT "gen_random_uuid"(),
+    "event_type" "public"."event_type_enum" DEFAULT 'public'::"public"."event_type_enum" NOT NULL,
+    "group_id" "uuid",
+    "community_id" "uuid",
+    "allow_member_invites" boolean DEFAULT false,
+    "requires_approval" boolean DEFAULT true,
     CONSTRAINT "events_age_min_check" CHECK (("age_min" >= 18)),
     CONSTRAINT "events_capacity_check" CHECK (("capacity" > 0)),
     CONSTRAINT "events_check" CHECK (("time_end" > "time_start")),
-    CONSTRAINT "events_check1" CHECK (("age_max" >= "age_min"))
+    CONSTRAINT "events_check1" CHECK (("age_max" >= "age_min")),
+    CONSTRAINT "events_community_type_check" CHECK (((("event_type" = 'community_event'::"public"."event_type_enum") AND ("community_id" IS NOT NULL)) OR (("event_type" <> 'community_event'::"public"."event_type_enum") AND ("community_id" IS NULL)))),
+    CONSTRAINT "events_group_type_check" CHECK (((("event_type" = 'group_event'::"public"."event_type_enum") AND ("group_id" IS NOT NULL)) OR (("event_type" <> 'group_event'::"public"."event_type_enum") AND ("group_id" IS NULL)))),
+    CONSTRAINT "events_type_approval_check" CHECK (((("event_type" = 'public'::"public"."event_type_enum") AND ("requires_approval" = false)) OR (("event_type" = ANY (ARRAY['public_application'::"public"."event_type_enum", 'private'::"public"."event_type_enum"])) AND ("requires_approval" = true)) OR ("event_type" = ANY (ARRAY['invite_only'::"public"."event_type_enum", 'group_event'::"public"."event_type_enum", 'community_event'::"public"."event_type_enum"]))))
 );
 
 
@@ -1481,6 +4487,70 @@ ALTER TABLE ONLY "public"."frames" FORCE ROW LEVEL SECURITY;
 ALTER TABLE "public"."frames" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."group_invites" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "group_id" "uuid" NOT NULL,
+    "invited_by" "uuid" NOT NULL,
+    "invited_user_id" "uuid" NOT NULL,
+    "role" "public"."member_role_enum" DEFAULT 'member'::"public"."member_role_enum" NOT NULL,
+    "status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "message" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "responded_at" timestamp with time zone,
+    CONSTRAINT "group_invites_no_self_invite" CHECK (("invited_by" <> "invited_user_id")),
+    CONSTRAINT "group_invites_role_check" CHECK (("role" = ANY (ARRAY['member'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"]))),
+    CONSTRAINT "group_invites_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'accepted'::"text", 'declined'::"text"])))
+);
+
+
+ALTER TABLE "public"."group_invites" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."group_invites" IS 'Stores invitations to join groups. Users can only invite their matches.';
+
+
+
+COMMENT ON COLUMN "public"."group_invites"."role" IS 'The role the invited user will have when they accept (member or admin)';
+
+
+
+COMMENT ON COLUMN "public"."group_invites"."status" IS 'pending, accepted, or declined';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."group_members" (
+    "group_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "role" "public"."member_role_enum" DEFAULT 'member'::"public"."member_role_enum",
+    "joined_at" timestamp with time zone DEFAULT "now"(),
+    "muted" boolean DEFAULT false
+);
+
+
+ALTER TABLE "public"."group_members" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."groups" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "description" "text",
+    "cover_image_url" "text",
+    "created_by" "uuid" NOT NULL,
+    "max_members" integer DEFAULT 50,
+    "member_count" integer DEFAULT 0,
+    "is_private" boolean DEFAULT false,
+    "invite_code" "uuid" DEFAULT "gen_random_uuid"(),
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "groups_max_members_limit" CHECK ((("max_members" <= 50) AND ("max_members" >= 2))),
+    CONSTRAINT "groups_member_count_valid" CHECK ((("member_count" >= 0) AND ("member_count" <= "max_members"))),
+    CONSTRAINT "groups_name_length" CHECK ((("char_length"("name") >= 2) AND ("char_length"("name") <= 100)))
+);
+
+
+ALTER TABLE "public"."groups" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."hobbies_master" (
     "id" integer NOT NULL,
     "label" "text"
@@ -1503,6 +4573,32 @@ ALTER SEQUENCE "public"."hobbies_master_id_seq" OWNER TO "postgres";
 
 
 ALTER SEQUENCE "public"."hobbies_master_id_seq" OWNED BY "public"."hobbies_master"."id";
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."languages_master" (
+    "id" integer NOT NULL,
+    "code" "text" NOT NULL,
+    "label" "text" NOT NULL
+);
+
+
+ALTER TABLE "public"."languages_master" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."languages_master_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE "public"."languages_master_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."languages_master_id_seq" OWNED BY "public"."languages_master"."id";
 
 
 
@@ -1534,18 +4630,26 @@ CREATE TABLE IF NOT EXISTS "public"."match_requests" (
     "status" "public"."match_status_enum" DEFAULT 'pending'::"public"."match_status_enum" NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "responded_at" timestamp with time zone,
-    "match_mode" "public"."match_mode_enum" DEFAULT 'dating'::"public"."match_mode_enum" NOT NULL,
-    "connection_visibility" "public"."connection_visibility_enum" DEFAULT 'full_profile'::"public"."connection_visibility_enum" NOT NULL,
-    "place_role" "public"."place_role_enum" DEFAULT 'none'::"public"."place_role_enum" NOT NULL,
-    "chat_allowed" boolean DEFAULT true NOT NULL,
-    "blind_meet_time" timestamp with time zone,
-    "blind_location_name" "text",
-    "blind_location" "public"."geography"(Point,4326),
-    "origin_event_id" "uuid"
+    "origin_event_id" "uuid",
+    "sender_message" "text",
+    "origin_context" "text" DEFAULT 'proximity'::"text",
+    "origin_group_id" "uuid",
+    "origin_community_id" "uuid",
+    CONSTRAINT "match_requests_origin_context_check" CHECK (("origin_context" = ANY (ARRAY['proximity'::"text", 'event'::"text", 'group'::"text", 'community_event'::"text"])))
 );
 
 
 ALTER TABLE "public"."match_requests" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."message_reads" (
+    "message_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "read_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."message_reads" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."messages" (
@@ -1556,6 +4660,7 @@ CREATE TABLE IF NOT EXISTS "public"."messages" (
     "edited" boolean DEFAULT false NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "edited_at" timestamp with time zone,
+    "message_type" "public"."message_type_enum" DEFAULT 'text'::"public"."message_type_enum" NOT NULL,
     CONSTRAINT "messages_content_check" CHECK (("length"(TRIM(BOTH FROM "content")) > 0))
 );
 
@@ -1568,10 +4673,9 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "full_name" "text",
     "age" integer,
     "gender" "text" NOT NULL,
-    "sexual_orientation" "public"."orientation_enum" NOT NULL,
+    "sexual_orientation" "public"."orientation_enum",
     "age_pref_min" integer,
     "age_pref_max" integer,
-    "brings_you" "public"."brings_enum" NOT NULL,
     "interested_in" "public"."gender_enum"[] NOT NULL,
     "height_cm" integer,
     "education" "text",
@@ -1594,6 +4698,12 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "frame_id" "uuid",
     "last_seen" timestamp with time zone DEFAULT "now"(),
     "bio" "text",
+    "marital_status" "public"."marital_status_enum",
+    "vehicles" "public"."vehicle_enum"[],
+    "hometown" "text",
+    "looking_for" "public"."looking_for_enum"[],
+    "values" "public"."value_enum"[],
+    "profile_visibility" "public"."profile_visibility_enum" DEFAULT 'public'::"public"."profile_visibility_enum" NOT NULL,
     CONSTRAINT "interested_in_min" CHECK (("array_length"("interested_in", 1) >= 1)),
     CONSTRAINT "profiles_age_check" CHECK (("age" >= 18)),
     CONSTRAINT "profiles_distance_km_check" CHECK ((("distance_km" >= 0) AND ("distance_km" <= 4)))
@@ -1612,21 +4722,13 @@ CREATE TABLE IF NOT EXISTS "public"."user_hobbies" (
 ALTER TABLE "public"."user_hobbies" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."user_modes" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "user_id" "uuid",
-    "mode" "text",
-    "created_at" timestamp with time zone DEFAULT "now"(),
-    "updated_at" timestamp with time zone DEFAULT "now"(),
-    "looking_for_date" "public"."looking_enum"[],
-    "value_date" "public"."value_date_enum"[],
-    "value_friend" "public"."friend_value_enum"[],
-    "looking_for_friend" "public"."looking_friend_enum"[],
-    CONSTRAINT "user_modes_mode_check" CHECK (("mode" = ANY (ARRAY['dating'::"text", 'friend'::"text"])))
+CREATE TABLE IF NOT EXISTS "public"."user_languages" (
+    "user_id" "uuid" NOT NULL,
+    "language_id" integer NOT NULL
 );
 
 
-ALTER TABLE "public"."user_modes" OWNER TO "postgres";
+ALTER TABLE "public"."user_languages" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."user_photos" (
@@ -1661,12 +4763,31 @@ ALTER TABLE ONLY "public"."hobbies_master" ALTER COLUMN "id" SET DEFAULT "nextva
 
 
 
+ALTER TABLE ONLY "public"."languages_master" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."languages_master_id_seq"'::"regclass");
+
+
+
 ALTER TABLE ONLY "public"."user_photos" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."user_photos_id_seq"'::"regclass");
 
 
 
 ALTER TABLE ONLY "public"."blocks"
     ADD CONSTRAINT "blocks_pkey" PRIMARY KEY ("blocker_id", "blocked_id");
+
+
+
+ALTER TABLE ONLY "public"."communities"
+    ADD CONSTRAINT "communities_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."community_announcements"
+    ADD CONSTRAINT "community_announcements_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."community_members"
+    ADD CONSTRAINT "community_members_pkey" PRIMARY KEY ("community_id", "user_id");
 
 
 
@@ -1690,6 +4811,11 @@ ALTER TABLE ONLY "public"."event_applications"
 
 
 
+ALTER TABLE ONLY "public"."event_invites"
+    ADD CONSTRAINT "event_invites_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."event_ratings"
     ADD CONSTRAINT "event_ratings_event_id_rater_id_key" UNIQUE ("event_id", "rater_id");
 
@@ -1710,6 +4836,21 @@ ALTER TABLE ONLY "public"."frames"
 
 
 
+ALTER TABLE ONLY "public"."group_invites"
+    ADD CONSTRAINT "group_invites_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."group_members"
+    ADD CONSTRAINT "group_members_pkey" PRIMARY KEY ("group_id", "user_id");
+
+
+
+ALTER TABLE ONLY "public"."groups"
+    ADD CONSTRAINT "groups_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."hobbies_master"
     ADD CONSTRAINT "hobbies_master_label_key" UNIQUE ("label");
 
@@ -1717,6 +4858,21 @@ ALTER TABLE ONLY "public"."hobbies_master"
 
 ALTER TABLE ONLY "public"."hobbies_master"
     ADD CONSTRAINT "hobbies_master_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."languages_master"
+    ADD CONSTRAINT "languages_master_code_key" UNIQUE ("code");
+
+
+
+ALTER TABLE ONLY "public"."languages_master"
+    ADD CONSTRAINT "languages_master_label_key" UNIQUE ("label");
+
+
+
+ALTER TABLE ONLY "public"."languages_master"
+    ADD CONSTRAINT "languages_master_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1735,6 +4891,11 @@ ALTER TABLE ONLY "public"."match_requests"
 
 
 
+ALTER TABLE ONLY "public"."message_reads"
+    ADD CONSTRAINT "message_reads_pkey" PRIMARY KEY ("message_id", "user_id");
+
+
+
 ALTER TABLE ONLY "public"."messages"
     ADD CONSTRAINT "messages_pkey" PRIMARY KEY ("id");
 
@@ -1750,13 +4911,8 @@ ALTER TABLE ONLY "public"."user_hobbies"
 
 
 
-ALTER TABLE ONLY "public"."user_modes"
-    ADD CONSTRAINT "user_modes_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."user_modes"
-    ADD CONSTRAINT "user_modes_user_mode_unique" UNIQUE ("user_id", "mode");
+ALTER TABLE ONLY "public"."user_languages"
+    ADD CONSTRAINT "user_languages_pkey" PRIMARY KEY ("user_id", "language_id");
 
 
 
@@ -1769,11 +4925,43 @@ CREATE INDEX "blocks_blocked_blocker_idx" ON "public"."blocks" USING "btree" ("b
 
 
 
+CREATE UNIQUE INDEX "event_invites_user_unique" ON "public"."event_invites" USING "btree" ("event_id", "invited_user_id") WHERE ("invited_user_id" IS NOT NULL);
+
+
+
 CREATE INDEX "frames_created_idx" ON "public"."frames" USING "btree" ("created_at");
 
 
 
 CREATE INDEX "frames_user_expires_idx" ON "public"."frames" USING "btree" ("user_id", "expires_at" DESC);
+
+
+
+CREATE UNIQUE INDEX "group_invites_unique_pending" ON "public"."group_invites" USING "btree" ("group_id", "invited_user_id") WHERE ("status" = 'pending'::"text");
+
+
+
+CREATE INDEX "idx_communities_category" ON "public"."communities" USING "btree" ("category");
+
+
+
+CREATE INDEX "idx_communities_created_by" ON "public"."communities" USING "btree" ("created_by");
+
+
+
+CREATE INDEX "idx_communities_invite_code" ON "public"."communities" USING "btree" ("invite_code");
+
+
+
+CREATE INDEX "idx_community_announcements_community" ON "public"."community_announcements" USING "btree" ("community_id");
+
+
+
+CREATE INDEX "idx_community_announcements_pinned" ON "public"."community_announcements" USING "btree" ("community_id", "pinned" DESC, "created_at" DESC);
+
+
+
+CREATE INDEX "idx_community_members_user" ON "public"."community_members" USING "btree" ("user_id");
 
 
 
@@ -1785,11 +4973,19 @@ CREATE INDEX "idx_conversation_members_user" ON "public"."conversation_members" 
 
 
 
+CREATE INDEX "idx_conversations_community" ON "public"."conversations" USING "btree" ("community_id") WHERE ("community_id" IS NOT NULL);
+
+
+
 CREATE INDEX "idx_conversations_created" ON "public"."conversations" USING "btree" ("created_at");
 
 
 
 CREATE INDEX "idx_conversations_event" ON "public"."conversations" USING "btree" ("event_id");
+
+
+
+CREATE INDEX "idx_conversations_group" ON "public"."conversations" USING "btree" ("group_id") WHERE ("group_id" IS NOT NULL);
 
 
 
@@ -1813,6 +5009,22 @@ CREATE INDEX "idx_event_applications_status" ON "public"."event_applications" US
 
 
 
+CREATE INDEX "idx_event_invites_community" ON "public"."event_invites" USING "btree" ("community_id") WHERE ("community_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_event_invites_event" ON "public"."event_invites" USING "btree" ("event_id");
+
+
+
+CREATE INDEX "idx_event_invites_group" ON "public"."event_invites" USING "btree" ("group_id") WHERE ("group_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_event_invites_invited_user" ON "public"."event_invites" USING "btree" ("invited_user_id");
+
+
+
 CREATE INDEX "idx_event_ratings_event" ON "public"."event_ratings" USING "btree" ("event_id");
 
 
@@ -1825,15 +5037,67 @@ CREATE INDEX "idx_event_ratings_rating" ON "public"."event_ratings" USING "btree
 
 
 
+CREATE INDEX "idx_events_community_id" ON "public"."events" USING "btree" ("community_id") WHERE ("community_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_events_event_type" ON "public"."events" USING "btree" ("event_type");
+
+
+
+CREATE INDEX "idx_events_group_id" ON "public"."events" USING "btree" ("group_id") WHERE ("group_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_events_invite_code" ON "public"."events" USING "btree" ("invite_code") WHERE ("visibility" = 'invite_only'::"public"."event_visibility_enum");
+
+
+
 CREATE INDEX "idx_events_location" ON "public"."events" USING "gist" ("location");
 
 
 
-CREATE INDEX "idx_match_requests_mode" ON "public"."match_requests" USING "btree" ("match_mode");
+CREATE INDEX "idx_events_visibility" ON "public"."events" USING "btree" ("visibility");
+
+
+
+CREATE INDEX "idx_group_invites_group" ON "public"."group_invites" USING "btree" ("group_id");
+
+
+
+CREATE INDEX "idx_group_invites_invited_by" ON "public"."group_invites" USING "btree" ("invited_by");
+
+
+
+CREATE INDEX "idx_group_invites_invited_user" ON "public"."group_invites" USING "btree" ("invited_user_id");
+
+
+
+CREATE INDEX "idx_group_invites_status" ON "public"."group_invites" USING "btree" ("status");
+
+
+
+CREATE INDEX "idx_group_members_user" ON "public"."group_members" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "idx_groups_created_by" ON "public"."groups" USING "btree" ("created_by");
+
+
+
+CREATE INDEX "idx_groups_invite_code" ON "public"."groups" USING "btree" ("invite_code");
+
+
+
+CREATE INDEX "idx_match_requests_origin_context" ON "public"."match_requests" USING "btree" ("origin_context");
 
 
 
 CREATE INDEX "idx_match_requests_origin_event" ON "public"."match_requests" USING "btree" ("origin_event_id");
+
+
+
+CREATE INDEX "idx_match_requests_origin_group" ON "public"."match_requests" USING "btree" ("origin_group_id") WHERE ("origin_group_id" IS NOT NULL);
 
 
 
@@ -1849,7 +5113,11 @@ CREATE INDEX "idx_match_requests_target" ON "public"."match_requests" USING "btr
 
 
 
-CREATE INDEX "idx_match_requests_visibility" ON "public"."match_requests" USING "btree" ("connection_visibility");
+CREATE INDEX "idx_message_reads_message" ON "public"."message_reads" USING "btree" ("message_id");
+
+
+
+CREATE INDEX "idx_message_reads_user" ON "public"."message_reads" USING "btree" ("user_id");
 
 
 
@@ -1873,11 +5141,31 @@ CREATE INDEX "idx_profiles_lat_lng" ON "public"."profiles" USING "btree" ("lat",
 
 
 
+CREATE INDEX "idx_profiles_looking_for" ON "public"."profiles" USING "gin" ("looking_for");
+
+
+
+CREATE INDEX "idx_profiles_marital_status" ON "public"."profiles" USING "btree" ("marital_status");
+
+
+
 CREATE INDEX "idx_profiles_prompt_answers" ON "public"."profiles" USING "gin" ("prompt_answers");
 
 
 
-CREATE INDEX "idx_user_modes_user_id_updated_at" ON "public"."user_modes" USING "btree" ("user_id", "updated_at" DESC);
+CREATE INDEX "idx_profiles_values" ON "public"."profiles" USING "gin" ("values");
+
+
+
+CREATE INDEX "idx_profiles_visibility" ON "public"."profiles" USING "btree" ("profile_visibility");
+
+
+
+CREATE INDEX "idx_user_languages_language" ON "public"."user_languages" USING "btree" ("language_id");
+
+
+
+CREATE INDEX "idx_user_languages_user" ON "public"."user_languages" USING "btree" ("user_id");
 
 
 
@@ -1885,11 +5173,7 @@ CREATE INDEX "idx_user_photos_user_id_is_main" ON "public"."user_photos" USING "
 
 
 
-CREATE UNIQUE INDEX "match_requests_unique_pair_mode" ON "public"."match_requests" USING "btree" (LEAST("requester_id", "target_id"), GREATEST("requester_id", "target_id"), "match_mode");
-
-
-
-CREATE UNIQUE INDEX "user_modes_unique_user_mode_idx" ON "public"."user_modes" USING "btree" ("user_id", "mode");
+CREATE UNIQUE INDEX "match_requests_unique_pair" ON "public"."match_requests" USING "btree" (LEAST("requester_id", "target_id"), GREATEST("requester_id", "target_id"));
 
 
 
@@ -1921,6 +5205,26 @@ CREATE OR REPLACE TRIGGER "set_location_from_coords" BEFORE INSERT OR UPDATE ON 
 
 
 
+CREATE OR REPLACE TRIGGER "trg_add_approved_to_event_chat" AFTER INSERT OR UPDATE ON "public"."event_applications" FOR EACH ROW EXECUTE FUNCTION "public"."add_approved_applicant_to_event_chat"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_add_invited_to_event_chat" AFTER UPDATE ON "public"."event_invites" FOR EACH ROW EXECUTE FUNCTION "public"."add_invited_user_to_event_chat"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_create_community_conversation" AFTER INSERT ON "public"."communities" FOR EACH ROW EXECUTE FUNCTION "public"."create_community_conversation"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_create_event_group_chat" AFTER INSERT ON "public"."events" FOR EACH ROW EXECUTE FUNCTION "public"."create_event_group_chat"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_create_group_conversation" AFTER INSERT ON "public"."groups" FOR EACH ROW EXECUTE FUNCTION "public"."create_group_conversation"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_enforce_photo_max_4" BEFORE INSERT ON "public"."user_photos" FOR EACH ROW EXECUTE FUNCTION "public"."enforce_photo_max_4"();
 
 
@@ -1937,7 +5241,39 @@ CREATE OR REPLACE TRIGGER "trg_frames_before_insert_rotate" BEFORE INSERT ON "pu
 
 
 
+CREATE OR REPLACE TRIGGER "trg_handle_group_invite_acceptance" BEFORE UPDATE ON "public"."group_invites" FOR EACH ROW EXECUTE FUNCTION "public"."handle_group_invite_acceptance"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_mark_expired_frames" BEFORE INSERT OR UPDATE ON "public"."frames" FOR EACH ROW EXECUTE FUNCTION "public"."mark_expired_frames"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_remove_from_event_chat" AFTER UPDATE ON "public"."event_applications" FOR EACH ROW EXECUTE FUNCTION "public"."remove_user_from_event_chat"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_sync_community_conversation_member" AFTER INSERT OR DELETE ON "public"."community_members" FOR EACH ROW EXECUTE FUNCTION "public"."sync_community_conversation_member"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_sync_group_conversation_member" AFTER INSERT OR DELETE ON "public"."group_members" FOR EACH ROW EXECUTE FUNCTION "public"."sync_group_conversation_member"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_update_community_member_count" AFTER INSERT OR DELETE ON "public"."community_members" FOR EACH ROW EXECUTE FUNCTION "public"."update_community_member_count"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_update_group_member_count" AFTER INSERT OR DELETE ON "public"."group_members" FOR EACH ROW EXECUTE FUNCTION "public"."update_group_member_count"();
+
+
+
+CREATE OR REPLACE TRIGGER "update_announcements_updated_at" BEFORE UPDATE ON "public"."community_announcements" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
+
+
+
+CREATE OR REPLACE TRIGGER "update_communities_updated_at" BEFORE UPDATE ON "public"."communities" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
 
 
 
@@ -1949,6 +5285,10 @@ CREATE OR REPLACE TRIGGER "update_events_updated_at" BEFORE UPDATE ON "public"."
 
 
 
+CREATE OR REPLACE TRIGGER "update_groups_updated_at" BEFORE UPDATE ON "public"."groups" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
+
+
+
 ALTER TABLE ONLY "public"."blocks"
     ADD CONSTRAINT "blocks_blocked_id_fkey" FOREIGN KEY ("blocked_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
@@ -1956,6 +5296,31 @@ ALTER TABLE ONLY "public"."blocks"
 
 ALTER TABLE ONLY "public"."blocks"
     ADD CONSTRAINT "blocks_blocker_id_fkey" FOREIGN KEY ("blocker_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."communities"
+    ADD CONSTRAINT "communities_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."community_announcements"
+    ADD CONSTRAINT "community_announcements_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."community_announcements"
+    ADD CONSTRAINT "community_announcements_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "public"."communities"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."community_members"
+    ADD CONSTRAINT "community_members_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "public"."communities"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."community_members"
+    ADD CONSTRAINT "community_members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
 
 
@@ -1970,7 +5335,17 @@ ALTER TABLE ONLY "public"."conversation_members"
 
 
 ALTER TABLE ONLY "public"."conversations"
+    ADD CONSTRAINT "conversations_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "public"."communities"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."conversations"
     ADD CONSTRAINT "conversations_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."conversations"
+    ADD CONSTRAINT "conversations_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."groups"("id") ON DELETE CASCADE;
 
 
 
@@ -1989,6 +5364,31 @@ ALTER TABLE ONLY "public"."event_applications"
 
 
 
+ALTER TABLE ONLY "public"."event_invites"
+    ADD CONSTRAINT "event_invites_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "public"."communities"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."event_invites"
+    ADD CONSTRAINT "event_invites_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."event_invites"
+    ADD CONSTRAINT "event_invites_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."groups"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."event_invites"
+    ADD CONSTRAINT "event_invites_invited_by_fkey" FOREIGN KEY ("invited_by") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."event_invites"
+    ADD CONSTRAINT "event_invites_invited_user_id_fkey" FOREIGN KEY ("invited_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."event_ratings"
     ADD CONSTRAINT "event_ratings_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE CASCADE;
 
@@ -1996,6 +5396,16 @@ ALTER TABLE ONLY "public"."event_ratings"
 
 ALTER TABLE ONLY "public"."event_ratings"
     ADD CONSTRAINT "event_ratings_rater_id_fkey" FOREIGN KEY ("rater_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."events"
+    ADD CONSTRAINT "events_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "public"."communities"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."events"
+    ADD CONSTRAINT "events_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."groups"("id") ON DELETE CASCADE;
 
 
 
@@ -2009,13 +5419,53 @@ ALTER TABLE ONLY "public"."frames"
 
 
 
+ALTER TABLE ONLY "public"."group_invites"
+    ADD CONSTRAINT "group_invites_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."groups"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."group_invites"
+    ADD CONSTRAINT "group_invites_invited_by_fkey" FOREIGN KEY ("invited_by") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."group_invites"
+    ADD CONSTRAINT "group_invites_invited_user_id_fkey" FOREIGN KEY ("invited_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."group_members"
+    ADD CONSTRAINT "group_members_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."groups"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."group_members"
+    ADD CONSTRAINT "group_members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."groups"
+    ADD CONSTRAINT "groups_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."lifestyle"
     ADD CONSTRAINT "lifestyle_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
 
 
 ALTER TABLE ONLY "public"."match_requests"
+    ADD CONSTRAINT "match_requests_origin_community_fk" FOREIGN KEY ("origin_community_id") REFERENCES "public"."communities"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."match_requests"
     ADD CONSTRAINT "match_requests_origin_event_fk" FOREIGN KEY ("origin_event_id") REFERENCES "public"."events"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."match_requests"
+    ADD CONSTRAINT "match_requests_origin_group_fk" FOREIGN KEY ("origin_group_id") REFERENCES "public"."groups"("id") ON DELETE SET NULL;
 
 
 
@@ -2026,6 +5476,16 @@ ALTER TABLE ONLY "public"."match_requests"
 
 ALTER TABLE ONLY "public"."match_requests"
     ADD CONSTRAINT "match_requests_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."message_reads"
+    ADD CONSTRAINT "message_reads_message_id_fkey" FOREIGN KEY ("message_id") REFERENCES "public"."messages"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."message_reads"
+    ADD CONSTRAINT "message_reads_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
 
 
@@ -2054,8 +5514,13 @@ ALTER TABLE ONLY "public"."user_hobbies"
 
 
 
-ALTER TABLE ONLY "public"."user_modes"
-    ADD CONSTRAINT "user_modes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."user_languages"
+    ADD CONSTRAINT "user_languages_language_id_fkey" FOREIGN KEY ("language_id") REFERENCES "public"."languages_master"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."user_languages"
+    ADD CONSTRAINT "user_languages_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
 
 
@@ -2064,11 +5529,31 @@ ALTER TABLE ONLY "public"."user_photos"
 
 
 
-CREATE POLICY "Host can delete their own events" ON "public"."events" FOR DELETE USING (("host_id" = "auth"."uid"()));
-
-
-
 CREATE POLICY "Host can update their own events" ON "public"."events" FOR UPDATE USING (("host_id" = "auth"."uid"())) WITH CHECK (("host_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "announcements:delete_author_or_admin" ON "public"."community_announcements" FOR DELETE TO "authenticated" USING ((("author_id" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "cm"."community_id") AND ("cm"."user_id" = "auth"."uid"()) AND ("cm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"])))))));
+
+
+
+CREATE POLICY "announcements:insert_admin" ON "public"."community_announcements" FOR INSERT TO "authenticated" WITH CHECK ((("author_id" = "auth"."uid"()) AND (EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "cm"."community_id") AND ("cm"."user_id" = "auth"."uid"()) AND ("cm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum", 'moderator'::"public"."member_role_enum"])))))));
+
+
+
+CREATE POLICY "announcements:select_member" ON "public"."community_announcements" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "cm"."community_id") AND ("cm"."user_id" = "auth"."uid"())))));
+
+
+
+CREATE POLICY "announcements:update_author_or_admin" ON "public"."community_announcements" FOR UPDATE TO "authenticated" USING ((("author_id" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "cm"."community_id") AND ("cm"."user_id" = "auth"."uid"()) AND ("cm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"])))))));
 
 
 
@@ -2087,6 +5572,55 @@ CREATE POLICY "blocks: select self-related" ON "public"."blocks" FOR SELECT TO "
 
 
 
+ALTER TABLE "public"."communities" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "communities:delete_owner" ON "public"."communities" FOR DELETE TO "authenticated" USING (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "communities:insert_own" ON "public"."communities" FOR INSERT TO "authenticated" WITH CHECK (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "communities:select_public" ON "public"."communities" FOR SELECT TO "authenticated" USING (((NOT "is_private") OR ("created_by" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "communities"."id") AND ("cm"."user_id" = "auth"."uid"()))))));
+
+
+
+CREATE POLICY "communities:update_admin" ON "public"."communities" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "communities"."id") AND ("cm"."user_id" = "auth"."uid"()) AND ("cm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"]))))));
+
+
+
+ALTER TABLE "public"."community_announcements" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."community_members" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "community_members:delete_self_or_admin" ON "public"."community_members" FOR DELETE TO "authenticated" USING ((("user_id" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "cm"."community_id") AND ("cm"."user_id" = "auth"."uid"()) AND ("cm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum", 'moderator'::"public"."member_role_enum"])))))));
+
+
+
+CREATE POLICY "community_members:insert_self" ON "public"."community_members" FOR INSERT TO "authenticated" WITH CHECK (("user_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "community_members:select_member" ON "public"."community_members" FOR SELECT TO "authenticated" USING ((("user_id" = "auth"."uid"()) OR "public"."is_community_member_direct"("community_id", "auth"."uid"())));
+
+
+
+CREATE POLICY "community_members:update_admin" ON "public"."community_members" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "cm"."community_id") AND ("cm"."user_id" = "auth"."uid"()) AND ("cm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"]))))));
+
+
+
 ALTER TABLE "public"."conversation_members" ENABLE ROW LEVEL SECURITY;
 
 
@@ -2095,6 +5629,10 @@ CREATE POLICY "conversation_members:delete_self" ON "public"."conversation_membe
 
 
 CREATE POLICY "conversation_members:select_self" ON "public"."conversation_members" FOR SELECT TO "authenticated" USING (("user_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "conversation_members:update_self" ON "public"."conversation_members" FOR UPDATE TO "authenticated" USING (("user_id" = "auth"."uid"())) WITH CHECK (("user_id" = "auth"."uid"()));
 
 
 
@@ -2116,9 +5654,7 @@ CREATE POLICY "event_applications:insert_own" ON "public"."event_applications" F
 
 
 
-CREATE POLICY "event_applications:select_own_or_host" ON "public"."event_applications" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "applicant_id") OR ("auth"."uid"() = ( SELECT "e"."host_id"
-   FROM "public"."events" "e"
-  WHERE ("e"."id" = "event_applications"."event_id")))));
+CREATE POLICY "event_applications:select_own_or_host" ON "public"."event_applications" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "applicant_id") OR ("auth"."uid"() = "public"."get_event_host_id"("event_id"))));
 
 
 
@@ -2126,11 +5662,28 @@ CREATE POLICY "event_applications:update_cancel_own" ON "public"."event_applicat
 
 
 
-CREATE POLICY "event_applications:update_host" ON "public"."event_applications" FOR UPDATE TO "authenticated" USING (("auth"."uid"() = ( SELECT "e"."host_id"
+CREATE POLICY "event_applications:update_host" ON "public"."event_applications" FOR UPDATE TO "authenticated" USING (("auth"."uid"() = "public"."get_event_host_id"("event_id"))) WITH CHECK (("auth"."uid"() = "public"."get_event_host_id"("event_id")));
+
+
+
+ALTER TABLE "public"."event_invites" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "event_invites:delete_host_or_inviter" ON "public"."event_invites" FOR DELETE TO "authenticated" USING ((("invited_by" = "auth"."uid"()) OR ("auth"."uid"() = "public"."get_event_host_id"("event_id"))));
+
+
+
+CREATE POLICY "event_invites:insert_host_or_member" ON "public"."event_invites" FOR INSERT TO "authenticated" WITH CHECK ((("invited_by" = "auth"."uid"()) AND (EXISTS ( SELECT 1
    FROM "public"."events" "e"
-  WHERE ("e"."id" = "event_applications"."event_id")))) WITH CHECK (("auth"."uid"() = ( SELECT "e"."host_id"
-   FROM "public"."events" "e"
-  WHERE ("e"."id" = "event_applications"."event_id"))));
+  WHERE (("e"."id" = "event_invites"."event_id") AND (("e"."host_id" = "auth"."uid"()) OR ("e"."visibility" <> 'invite_only'::"public"."event_visibility_enum")))))));
+
+
+
+CREATE POLICY "event_invites:select_involved" ON "public"."event_invites" FOR SELECT TO "authenticated" USING ((("invited_by" = "auth"."uid"()) OR ("invited_user_id" = "auth"."uid"()) OR ("auth"."uid"() = "public"."get_event_host_id"("event_id"))));
+
+
+
+CREATE POLICY "event_invites:update_invited" ON "public"."event_invites" FOR UPDATE TO "authenticated" USING (("invited_user_id" = "auth"."uid"())) WITH CHECK (("invited_user_id" = "auth"."uid"()));
 
 
 
@@ -2148,11 +5701,27 @@ CREATE POLICY "event_ratings:select_all" ON "public"."event_ratings" FOR SELECT 
 ALTER TABLE "public"."events" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "events:insert_own" ON "public"."events" FOR INSERT TO "authenticated" WITH CHECK (("host_id" = "auth"."uid"()));
+CREATE POLICY "events:delete_own" ON "public"."events" FOR DELETE TO "authenticated" USING (("host_id" = "auth"."uid"()));
 
 
 
-CREATE POLICY "events:select_authenticated" ON "public"."events" FOR SELECT TO "authenticated" USING ((("auth"."uid"() IS NOT NULL) AND (NOT "public"."have_blocked_each_other"("auth"."uid"(), "host_id"))));
+CREATE POLICY "events:insert_by_type" ON "public"."events" FOR INSERT TO "authenticated" WITH CHECK ((("host_id" = "auth"."uid"()) AND (("event_type" = ANY (ARRAY['public'::"public"."event_type_enum", 'public_application'::"public"."event_type_enum", 'private'::"public"."event_type_enum", 'invite_only'::"public"."event_type_enum"])) OR (("event_type" = 'group_event'::"public"."event_type_enum") AND (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "events"."group_id") AND ("gm"."user_id" = "auth"."uid"()))))) OR (("event_type" = 'community_event'::"public"."event_type_enum") AND (EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "events"."community_id") AND ("cm"."user_id" = "auth"."uid"()) AND ("cm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"])))))))));
+
+
+
+CREATE POLICY "events:select_by_type" ON "public"."events" FOR SELECT TO "authenticated" USING ((("auth"."uid"() IS NOT NULL) AND (NOT "public"."have_blocked_each_other"("auth"."uid"(), "host_id")) AND (("host_id" = "auth"."uid"()) OR ("event_type" = ANY (ARRAY['public'::"public"."event_type_enum", 'public_application'::"public"."event_type_enum", 'private'::"public"."event_type_enum"])) OR (("event_type" = 'invite_only'::"public"."event_type_enum") AND ((EXISTS ( SELECT 1
+   FROM "public"."event_invites" "ei"
+  WHERE (("ei"."event_id" = "events"."id") AND ("ei"."invited_user_id" = "auth"."uid"())))) OR (EXISTS ( SELECT 1
+   FROM "public"."event_applications" "ea"
+  WHERE (("ea"."event_id" = "events"."id") AND ("ea"."applicant_id" = "auth"."uid"()) AND ("ea"."status" = 'approved'::"public"."event_application_status_enum")))))) OR (("event_type" = 'group_event'::"public"."event_type_enum") AND (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "events"."group_id") AND ("gm"."user_id" = "auth"."uid"()))))) OR (("event_type" = 'community_event'::"public"."event_type_enum") AND (EXISTS ( SELECT 1
+   FROM "public"."community_members" "cm"
+  WHERE (("cm"."community_id" = "events"."community_id") AND ("cm"."user_id" = "auth"."uid"()))))))));
 
 
 
@@ -2167,19 +5736,92 @@ CREATE POLICY "frames: insert own" ON "public"."frames" FOR INSERT TO "authentic
 
 
 
-CREATE POLICY "frames: select current via preview" ON "public"."frames" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "user_id") AND ("expires_at" > "now"())));
-
-
-
-CREATE POLICY "frames: select history via full" ON "public"."frames" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "user_id") AND ("expires_at" <= "now"())));
-
-
-
 CREATE POLICY "frames: select own" ON "public"."frames" FOR SELECT TO "authenticated" USING (("user_id" = "auth"."uid"()));
 
 
 
 CREATE POLICY "frames: update own" ON "public"."frames" FOR UPDATE TO "authenticated" USING (("user_id" = "auth"."uid"())) WITH CHECK (("user_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "frames: viewable with full access" ON "public"."frames" FOR SELECT TO "authenticated" USING ((("user_id" = "auth"."uid"()) OR (("public"."get_profile_access_level"("auth"."uid"(), "user_id") = 'full'::"text") AND ("expires_at" > "now"()) AND ("is_expired" = false))));
+
+
+
+ALTER TABLE "public"."group_invites" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "group_invites:delete_pending" ON "public"."group_invites" FOR DELETE TO "authenticated" USING ((("status" = 'pending'::"text") AND (("invited_by" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "group_invites"."group_id") AND ("gm"."user_id" = "auth"."uid"()) AND ("gm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"]))))))));
+
+
+
+CREATE POLICY "group_invites:insert_member" ON "public"."group_invites" FOR INSERT TO "authenticated" WITH CHECK ((("invited_by" = "auth"."uid"()) AND (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "group_invites"."group_id") AND ("gm"."user_id" = "auth"."uid"())))) AND (("role" = 'member'::"public"."member_role_enum") OR (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "group_invites"."group_id") AND ("gm"."user_id" = "auth"."uid"()) AND ("gm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"])))))) AND (EXISTS ( SELECT 1
+   FROM "public"."match_requests" "mr"
+  WHERE (("mr"."status" = 'accepted'::"public"."match_status_enum") AND ((("mr"."requester_id" = "auth"."uid"()) AND ("mr"."target_id" = "group_invites"."invited_user_id")) OR (("mr"."requester_id" = "group_invites"."invited_user_id") AND ("mr"."target_id" = "auth"."uid"())))))) AND (NOT (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "group_invites"."group_id") AND ("gm"."user_id" = "group_invites"."invited_user_id"))))) AND (NOT "public"."have_blocked_each_other"("auth"."uid"(), "invited_user_id"))));
+
+
+
+CREATE POLICY "group_invites:select_involved" ON "public"."group_invites" FOR SELECT TO "authenticated" USING ((("invited_by" = "auth"."uid"()) OR ("invited_user_id" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "group_invites"."group_id") AND ("gm"."user_id" = "auth"."uid"()) AND ("gm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"])))))));
+
+
+
+CREATE POLICY "group_invites:update_invitee" ON "public"."group_invites" FOR UPDATE TO "authenticated" USING ((("invited_user_id" = "auth"."uid"()) AND ("status" = 'pending'::"text"))) WITH CHECK ((("invited_user_id" = "auth"."uid"()) AND ("status" = ANY (ARRAY['accepted'::"text", 'declined'::"text"]))));
+
+
+
+ALTER TABLE "public"."group_members" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "group_members:delete_self_or_admin" ON "public"."group_members" FOR DELETE TO "authenticated" USING ((("user_id" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "gm"."group_id") AND ("gm"."user_id" = "auth"."uid"()) AND ("gm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"])))))));
+
+
+
+CREATE POLICY "group_members:insert_self" ON "public"."group_members" FOR INSERT TO "authenticated" WITH CHECK (("user_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "group_members:select_member" ON "public"."group_members" FOR SELECT TO "authenticated" USING ((("user_id" = "auth"."uid"()) OR "public"."is_group_member_direct"("group_id", "auth"."uid"())));
+
+
+
+CREATE POLICY "group_members:update_admin" ON "public"."group_members" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "gm"."group_id") AND ("gm"."user_id" = "auth"."uid"()) AND ("gm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"]))))));
+
+
+
+ALTER TABLE "public"."groups" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "groups:delete_owner" ON "public"."groups" FOR DELETE TO "authenticated" USING (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "groups:insert_own" ON "public"."groups" FOR INSERT TO "authenticated" WITH CHECK (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "groups:select_public" ON "public"."groups" FOR SELECT TO "authenticated" USING (((NOT "is_private") OR ("created_by" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "groups"."id") AND ("gm"."user_id" = "auth"."uid"()))))));
+
+
+
+CREATE POLICY "groups:update_admin" ON "public"."groups" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."group_members" "gm"
+  WHERE (("gm"."group_id" = "groups"."id") AND ("gm"."user_id" = "auth"."uid"()) AND ("gm"."role" = ANY (ARRAY['owner'::"public"."member_role_enum", 'admin'::"public"."member_role_enum"]))))));
 
 
 
@@ -2194,6 +5836,17 @@ CREATE POLICY "hobbies_master: seed by service_role" ON "public"."hobbies_master
 
 
 
+ALTER TABLE "public"."languages_master" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "languages_master: read" ON "public"."languages_master" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "languages_master: seed by service_role" ON "public"."languages_master" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
 ALTER TABLE "public"."lifestyle" ENABLE ROW LEVEL SECURITY;
 
 
@@ -2205,7 +5858,7 @@ CREATE POLICY "lifestyle: insert self" ON "public"."lifestyle" FOR INSERT TO "au
 
 
 
-CREATE POLICY "lifestyle: read self" ON "public"."lifestyle" FOR SELECT TO "authenticated" USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "lifestyle: matched users can view" ON "public"."lifestyle" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "user_id") OR "public"."is_matched_with"("user_id")));
 
 
 
@@ -2252,6 +5905,28 @@ CREATE POLICY "match_requests: target respond" ON "public"."match_requests" FOR 
 
 
 
+ALTER TABLE "public"."message_reads" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "message_reads:delete_self" ON "public"."message_reads" FOR DELETE TO "authenticated" USING (("user_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "message_reads:insert_self" ON "public"."message_reads" FOR INSERT TO "authenticated" WITH CHECK (("user_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "message_reads:select_conversation_members" ON "public"."message_reads" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM ("public"."messages" "m"
+     JOIN "public"."conversation_members" "cm" ON (("cm"."conversation_id" = "m"."conversation_id")))
+  WHERE (("m"."id" = "message_reads"."message_id") AND ("cm"."user_id" = "auth"."uid"())))));
+
+
+
+CREATE POLICY "message_reads:select_self" ON "public"."message_reads" FOR SELECT TO "authenticated" USING (("user_id" = "auth"."uid"()));
+
+
+
 ALTER TABLE "public"."messages" ENABLE ROW LEVEL SECURITY;
 
 
@@ -2274,6 +5949,10 @@ ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
 
 CREATE POLICY "profiles: insert self" ON "public"."profiles" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "id"));
+
+
+
+CREATE POLICY "profiles: matched users can view" ON "public"."profiles" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "id") OR "public"."is_matched_with"("id")));
 
 
 
@@ -2308,7 +5987,7 @@ CREATE POLICY "user_hobbies: manage self" ON "public"."user_hobbies" USING (("pu
 
 
 
-CREATE POLICY "user_hobbies: read self" ON "public"."user_hobbies" FOR SELECT TO "authenticated" USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "user_hobbies: matched users can view" ON "public"."user_hobbies" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "user_id") OR "public"."is_matched_with"("user_id")));
 
 
 
@@ -2316,22 +5995,18 @@ CREATE POLICY "user_hobbies: update self" ON "public"."user_hobbies" FOR UPDATE 
 
 
 
-ALTER TABLE "public"."user_modes" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."user_languages" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "user_modes: delete self" ON "public"."user_modes" FOR DELETE TO "authenticated" USING (("auth"."uid"() = "user_id"));
-
-
-
-CREATE POLICY "user_modes: insert self" ON "public"."user_modes" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "user_id"));
+CREATE POLICY "user_languages: delete self" ON "public"."user_languages" FOR DELETE TO "authenticated" USING (("auth"."uid"() = "user_id"));
 
 
 
-CREATE POLICY "user_modes: read self" ON "public"."user_modes" FOR SELECT TO "authenticated" USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "user_languages: insert self" ON "public"."user_languages" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "user_id"));
 
 
 
-CREATE POLICY "user_modes: update self" ON "public"."user_modes" FOR UPDATE TO "authenticated" USING (("auth"."uid"() = "user_id")) WITH CHECK (("auth"."uid"() = "user_id"));
+CREATE POLICY "user_languages: select matched" ON "public"."user_languages" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "user_id") OR "public"."is_matched_with"("user_id")));
 
 
 
@@ -2346,7 +6021,7 @@ CREATE POLICY "user_photos: insert self" ON "public"."user_photos" FOR INSERT TO
 
 
 
-CREATE POLICY "user_photos: read self" ON "public"."user_photos" FOR SELECT TO "authenticated" USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "user_photos: matched users can view" ON "public"."user_photos" FOR SELECT TO "authenticated" USING ((("auth"."uid"() = "user_id") OR "public"."is_matched_with"("user_id")));
 
 
 
@@ -2360,6 +6035,10 @@ ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
 
+
+
+
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."messages";
 
 
 
@@ -3185,6 +6864,30 @@ GRANT ALL ON FUNCTION "public"."_st_within"("geom1" "public"."geometry", "geom2"
 
 
 
+GRANT ALL ON FUNCTION "public"."accept_event_invite"("p_invite_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."accept_event_invite"("p_invite_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."accept_event_invite"("p_invite_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."accept_group_invite"("p_invite_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."accept_group_invite"("p_invite_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."accept_group_invite"("p_invite_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."add_approved_applicant_to_event_chat"() TO "anon";
+GRANT ALL ON FUNCTION "public"."add_approved_applicant_to_event_chat"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."add_approved_applicant_to_event_chat"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."add_invited_user_to_event_chat"() TO "anon";
+GRANT ALL ON FUNCTION "public"."add_invited_user_to_event_chat"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."add_invited_user_to_event_chat"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."addauth"("text") TO "postgres";
 GRANT ALL ON FUNCTION "public"."addauth"("text") TO "anon";
 GRANT ALL ON FUNCTION "public"."addauth"("text") TO "authenticated";
@@ -3213,6 +6916,24 @@ GRANT ALL ON FUNCTION "public"."addgeometrycolumn"("catalog_name" character vary
 
 
 
+GRANT ALL ON FUNCTION "public"."apply_to_event"("p_event_id" "uuid", "p_message" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."apply_to_event"("p_event_id" "uuid", "p_message" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."apply_to_event"("p_event_id" "uuid", "p_message" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."are_in_same_community"("p_user1" "uuid", "p_user2" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."are_in_same_community"("p_user1" "uuid", "p_user2" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."are_in_same_community"("p_user1" "uuid", "p_user2" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."are_in_same_group"("p_user1" "uuid", "p_user2" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."are_in_same_group"("p_user1" "uuid", "p_user2" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."are_in_same_group"("p_user1" "uuid", "p_user2" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."box3dtobox"("public"."box3d") TO "postgres";
 GRANT ALL ON FUNCTION "public"."box3dtobox"("public"."box3d") TO "anon";
 GRANT ALL ON FUNCTION "public"."box3dtobox"("public"."box3d") TO "authenticated";
@@ -3220,9 +6941,45 @@ GRANT ALL ON FUNCTION "public"."box3dtobox"("public"."box3d") TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."can_invite_to_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."can_invite_to_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."can_invite_to_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."can_join_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."can_join_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."can_join_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."can_manage_group_photo"("file_path" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."can_manage_group_photo"("file_path" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."can_manage_group_photo"("file_path" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."can_rate_event"("p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."can_rate_event"("p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."can_rate_event"("p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."can_see_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."can_see_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."can_see_event"("p_user_id" "uuid", "p_event_id" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."can_see_on_map"("me" "uuid", "other" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."can_see_on_map"("me" "uuid", "other" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."can_see_on_map"("me" "uuid", "other" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."can_send_match_request"("p_requester_id" "uuid", "p_target_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."can_send_match_request"("p_requester_id" "uuid", "p_target_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."can_send_match_request"("p_requester_id" "uuid", "p_target_id" "uuid") TO "service_role";
 
 
 
@@ -3286,15 +7043,45 @@ GRANT ALL ON FUNCTION "public"."contains_2d"("public"."geometry", "public"."box2
 
 
 
+GRANT ALL ON FUNCTION "public"."create_community_conversation"() TO "anon";
+GRANT ALL ON FUNCTION "public"."create_community_conversation"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."create_community_conversation"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."create_event_group_chat"() TO "anon";
+GRANT ALL ON FUNCTION "public"."create_event_group_chat"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."create_event_group_chat"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."create_event_v2"("p_event_data" "jsonb") TO "anon";
+GRANT ALL ON FUNCTION "public"."create_event_v2"("p_event_data" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."create_event_v2"("p_event_data" "jsonb") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."create_event_with_location"("p_event_data" json) TO "anon";
 GRANT ALL ON FUNCTION "public"."create_event_with_location"("p_event_data" json) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."create_event_with_location"("p_event_data" json) TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."create_group_conversation"() TO "anon";
+GRANT ALL ON FUNCTION "public"."create_group_conversation"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."create_group_conversation"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."current_user_id"() TO "anon";
 GRANT ALL ON FUNCTION "public"."current_user_id"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."current_user_id"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."decline_group_invite"("p_invite_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."decline_group_invite"("p_invite_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."decline_group_invite"("p_invite_id" "uuid") TO "service_role";
 
 
 
@@ -4095,9 +7882,87 @@ GRANT ALL ON FUNCTION "public"."get_all_events_with_coordinates"() TO "service_r
 
 
 
+GRANT ALL ON FUNCTION "public"."get_community_members_basic"("p_community_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_community_members_basic"("p_community_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_community_members_basic"("p_community_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_connection_options"("p_target_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_connection_options"("p_target_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_connection_options"("p_target_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_event_applications_for_host"("p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_event_applications_for_host"("p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_event_applications_for_host"("p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_event_host_id"("p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_event_host_id"("p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_event_host_id"("p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_event_members"("p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_event_members"("p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_event_members"("p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_event_participants_preview"("p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_event_participants_preview"("p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_event_participants_preview"("p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_events_by_type"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer, "p_event_types" "public"."event_type_enum"[]) TO "anon";
+GRANT ALL ON FUNCTION "public"."get_events_by_type"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer, "p_event_types" "public"."event_type_enum"[]) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_events_by_type"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer, "p_event_types" "public"."event_type_enum"[]) TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."get_events_with_coordinates"("p_status" "public"."event_status_enum") TO "anon";
 GRANT ALL ON FUNCTION "public"."get_events_with_coordinates"("p_status" "public"."event_status_enum") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."get_events_with_coordinates"("p_status" "public"."event_status_enum") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_events_with_visibility"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."get_events_with_visibility"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_events_with_visibility"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_km" integer) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_finished_event_participants"("p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_finished_event_participants"("p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_finished_event_participants"("p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_group_members_for_invitee"("p_group_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_group_members_for_invitee"("p_group_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_group_members_for_invitee"("p_group_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_group_members_with_connections"("p_group_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_group_members_with_connections"("p_group_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_group_members_with_connections"("p_group_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_group_pending_invites_for_invitee"("p_group_id" "uuid", "p_exclude_invite_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_group_pending_invites_for_invitee"("p_group_id" "uuid", "p_exclude_invite_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_group_pending_invites_for_invitee"("p_group_id" "uuid", "p_exclude_invite_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_host_rating_summary"("p_host_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_host_rating_summary"("p_host_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_host_rating_summary"("p_host_id" "uuid") TO "service_role";
 
 
 
@@ -4113,15 +7978,51 @@ GRANT ALL ON FUNCTION "public"."get_map_cards"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."get_map_cards"("p_mode" "public"."match_mode_enum") TO "anon";
-GRANT ALL ON FUNCTION "public"."get_map_cards"("p_mode" "public"."match_mode_enum") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."get_map_cards"("p_mode" "public"."match_mode_enum") TO "service_role";
+GRANT ALL ON FUNCTION "public"."get_map_cards_live"() TO "anon";
+GRANT ALL ON FUNCTION "public"."get_map_cards_live"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_map_cards_live"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."get_match_status"("target_user_id" "uuid", "p_mode" "public"."match_mode_enum") TO "anon";
-GRANT ALL ON FUNCTION "public"."get_match_status"("target_user_id" "uuid", "p_mode" "public"."match_mode_enum") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."get_match_status"("target_user_id" "uuid", "p_mode" "public"."match_mode_enum") TO "service_role";
+GRANT ALL ON FUNCTION "public"."get_match_status"("target_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_match_status"("target_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_match_status"("target_user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_match_status_extended"("target_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_match_status_extended"("target_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_match_status_extended"("target_user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_matched_user_profile"("target_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_matched_user_profile"("target_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_matched_user_profile"("target_user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_my_communities"() TO "anon";
+GRANT ALL ON FUNCTION "public"."get_my_communities"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_my_communities"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_my_groups"() TO "anon";
+GRANT ALL ON FUNCTION "public"."get_my_groups"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_my_groups"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_my_hosted_events"("p_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_my_hosted_events"("p_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_my_hosted_events"("p_user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_my_joined_events"("p_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_my_joined_events"("p_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_my_joined_events"("p_user_id" "uuid") TO "service_role";
 
 
 
@@ -4131,9 +8032,27 @@ GRANT ALL ON FUNCTION "public"."get_my_nearby_events"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "public"."event_status_enum") TO "anon";
-GRANT ALL ON FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "public"."event_status_enum") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "public"."event_status_enum") TO "service_role";
+GRANT ALL ON FUNCTION "public"."get_my_pending_group_invites"() TO "anon";
+GRANT ALL ON FUNCTION "public"."get_my_pending_group_invites"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_my_pending_group_invites"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_nearby_events_with_coordinates"("p_user_lat" double precision, "p_user_lng" double precision, "p_radius_meters" integer, "p_status" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_profile_access_level"("p_viewer_id" "uuid", "p_target_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_profile_access_level"("p_viewer_id" "uuid", "p_target_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_profile_access_level"("p_viewer_id" "uuid", "p_target_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_profile_for_viewer"("p_target_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_profile_for_viewer"("p_target_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_profile_for_viewer"("p_target_user_id" "uuid") TO "service_role";
 
 
 
@@ -4159,6 +8078,18 @@ GRANT ALL ON FUNCTION "public"."get_proj4_from_srid"(integer) TO "postgres";
 GRANT ALL ON FUNCTION "public"."get_proj4_from_srid"(integer) TO "anon";
 GRANT ALL ON FUNCTION "public"."get_proj4_from_srid"(integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."get_proj4_from_srid"(integer) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_user_active_frames"("target_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_user_active_frames"("target_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_user_active_frames"("target_user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_user_preview_extended"("target_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."get_user_preview_extended"("target_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_user_preview_extended"("target_user_id" "uuid") TO "service_role";
 
 
 
@@ -4203,6 +8134,12 @@ GRANT ALL ON FUNCTION "public"."handle_event_application_approval"() TO "service
 
 
 
+GRANT ALL ON FUNCTION "public"."handle_group_invite_acceptance"() TO "anon";
+GRANT ALL ON FUNCTION "public"."handle_group_invite_acceptance"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_group_invite_acceptance"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."handle_lifestyle_updated_at"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_lifestyle_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_lifestyle_updated_at"() TO "service_role";
@@ -4227,6 +8164,12 @@ GRANT ALL ON FUNCTION "public"."haversine_km"("lat1" numeric, "lon1" numeric, "l
 
 
 
+GRANT ALL ON FUNCTION "public"."is_community_member_direct"("p_community_id" "uuid", "p_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."is_community_member_direct"("p_community_id" "uuid", "p_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."is_community_member_direct"("p_community_id" "uuid", "p_user_id" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."is_contained_2d"("public"."box2df", "public"."box2df") TO "postgres";
 GRANT ALL ON FUNCTION "public"."is_contained_2d"("public"."box2df", "public"."box2df") TO "anon";
 GRANT ALL ON FUNCTION "public"."is_contained_2d"("public"."box2df", "public"."box2df") TO "authenticated";
@@ -4245,6 +8188,36 @@ GRANT ALL ON FUNCTION "public"."is_contained_2d"("public"."geometry", "public"."
 GRANT ALL ON FUNCTION "public"."is_contained_2d"("public"."geometry", "public"."box2df") TO "anon";
 GRANT ALL ON FUNCTION "public"."is_contained_2d"("public"."geometry", "public"."box2df") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."is_contained_2d"("public"."geometry", "public"."box2df") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."is_group_member_direct"("p_group_id" "uuid", "p_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."is_group_member_direct"("p_group_id" "uuid", "p_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."is_group_member_direct"("p_group_id" "uuid", "p_user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."is_matched_with"("other_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."is_matched_with"("other_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."is_matched_with"("other_user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."join_community_by_code"("p_invite_code" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."join_community_by_code"("p_invite_code" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."join_community_by_code"("p_invite_code" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."join_event_direct"("p_event_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."join_event_direct"("p_event_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."join_event_direct"("p_event_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."join_group_by_code"("p_invite_code" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."join_group_by_code"("p_invite_code" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."join_group_by_code"("p_invite_code" "uuid") TO "service_role";
 
 
 
@@ -4292,6 +8265,12 @@ GRANT ALL ON FUNCTION "public"."mark_all_expired_frames"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."mark_expired_frames"() TO "anon";
 GRANT ALL ON FUNCTION "public"."mark_expired_frames"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."mark_expired_frames"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."mark_messages_read"("p_conversation_id" "uuid", "p_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."mark_messages_read"("p_conversation_id" "uuid", "p_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."mark_messages_read"("p_conversation_id" "uuid", "p_user_id" "uuid") TO "service_role";
 
 
 
@@ -4813,9 +8792,21 @@ GRANT ALL ON FUNCTION "public"."postgis_wagyu_version"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."should_reveal_blind_profile"("match_id" "uuid") TO "anon";
-GRANT ALL ON FUNCTION "public"."should_reveal_blind_profile"("match_id" "uuid") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."should_reveal_blind_profile"("match_id" "uuid") TO "service_role";
+GRANT ALL ON FUNCTION "public"."remove_user_from_event_chat"() TO "anon";
+GRANT ALL ON FUNCTION "public"."remove_user_from_event_chat"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."remove_user_from_event_chat"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."send_match_request_full"("p_target_id" "uuid", "p_message" "text", "p_origin_event_id" "uuid", "p_origin_group_id" "uuid", "p_origin_community_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."send_match_request_full"("p_target_id" "uuid", "p_message" "text", "p_origin_event_id" "uuid", "p_origin_group_id" "uuid", "p_origin_community_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."send_match_request_full"("p_target_id" "uuid", "p_message" "text", "p_origin_event_id" "uuid", "p_origin_group_id" "uuid", "p_origin_community_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."send_match_request_with_context"("p_target_id" "uuid", "p_message" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."send_match_request_with_context"("p_target_id" "uuid", "p_message" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."send_match_request_with_context"("p_target_id" "uuid", "p_message" "text") TO "service_role";
 
 
 
@@ -7745,10 +11736,34 @@ GRANT ALL ON FUNCTION "public"."st_zmin"("public"."box3d") TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."sync_community_conversation_member"() TO "anon";
+GRANT ALL ON FUNCTION "public"."sync_community_conversation_member"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."sync_community_conversation_member"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."sync_group_conversation_member"() TO "anon";
+GRANT ALL ON FUNCTION "public"."sync_group_conversation_member"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."sync_group_conversation_member"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."unlockrows"("text") TO "postgres";
 GRANT ALL ON FUNCTION "public"."unlockrows"("text") TO "anon";
 GRANT ALL ON FUNCTION "public"."unlockrows"("text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."unlockrows"("text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."update_community_member_count"() TO "anon";
+GRANT ALL ON FUNCTION "public"."update_community_member_count"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_community_member_count"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."update_group_member_count"() TO "anon";
+GRANT ALL ON FUNCTION "public"."update_group_member_count"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_group_member_count"() TO "service_role";
 
 
 
@@ -7761,6 +11776,12 @@ GRANT ALL ON FUNCTION "public"."update_location_from_coords"() TO "service_role"
 GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "anon";
 GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."update_user_location"("p_user_id" "uuid", "p_latitude" numeric, "p_longitude" numeric, "p_distance_meters" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."update_user_location"("p_user_id" "uuid", "p_latitude" numeric, "p_longitude" numeric, "p_distance_meters" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_user_location"("p_user_id" "uuid", "p_latitude" numeric, "p_longitude" numeric, "p_distance_meters" integer) TO "service_role";
 
 
 
@@ -7794,6 +11815,18 @@ GRANT ALL ON FUNCTION "public"."validate_event_description_word_count"() TO "ser
 GRANT ALL ON FUNCTION "public"."validate_event_rating"() TO "anon";
 GRANT ALL ON FUNCTION "public"."validate_event_rating"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."validate_event_rating"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."were_in_same_community_event"("p_user1" "uuid", "p_user2" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."were_in_same_community_event"("p_user1" "uuid", "p_user2" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."were_in_same_community_event"("p_user1" "uuid", "p_user2" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."were_in_same_finished_event"("p_user1" "uuid", "p_user2" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."were_in_same_finished_event"("p_user1" "uuid", "p_user2" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."were_in_same_finished_event"("p_user1" "uuid", "p_user2" "uuid") TO "service_role";
 
 
 
@@ -7965,6 +11998,24 @@ GRANT ALL ON TABLE "public"."blocks" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."communities" TO "anon";
+GRANT ALL ON TABLE "public"."communities" TO "authenticated";
+GRANT ALL ON TABLE "public"."communities" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."community_announcements" TO "anon";
+GRANT ALL ON TABLE "public"."community_announcements" TO "authenticated";
+GRANT ALL ON TABLE "public"."community_announcements" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."community_members" TO "anon";
+GRANT ALL ON TABLE "public"."community_members" TO "authenticated";
+GRANT ALL ON TABLE "public"."community_members" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."conversation_members" TO "anon";
 GRANT ALL ON TABLE "public"."conversation_members" TO "authenticated";
 GRANT ALL ON TABLE "public"."conversation_members" TO "service_role";
@@ -7980,6 +12031,12 @@ GRANT ALL ON TABLE "public"."conversations" TO "service_role";
 GRANT ALL ON TABLE "public"."event_applications" TO "anon";
 GRANT ALL ON TABLE "public"."event_applications" TO "authenticated";
 GRANT ALL ON TABLE "public"."event_applications" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."event_invites" TO "anon";
+GRANT ALL ON TABLE "public"."event_invites" TO "authenticated";
+GRANT ALL ON TABLE "public"."event_invites" TO "service_role";
 
 
 
@@ -8001,6 +12058,24 @@ GRANT ALL ON TABLE "public"."frames" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."group_invites" TO "anon";
+GRANT ALL ON TABLE "public"."group_invites" TO "authenticated";
+GRANT ALL ON TABLE "public"."group_invites" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."group_members" TO "anon";
+GRANT ALL ON TABLE "public"."group_members" TO "authenticated";
+GRANT ALL ON TABLE "public"."group_members" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."groups" TO "anon";
+GRANT ALL ON TABLE "public"."groups" TO "authenticated";
+GRANT ALL ON TABLE "public"."groups" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."hobbies_master" TO "authenticated";
 GRANT ALL ON TABLE "public"."hobbies_master" TO "service_role";
 GRANT SELECT ON TABLE "public"."hobbies_master" TO "anon";
@@ -8013,6 +12088,18 @@ GRANT ALL ON SEQUENCE "public"."hobbies_master_id_seq" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."languages_master" TO "anon";
+GRANT ALL ON TABLE "public"."languages_master" TO "authenticated";
+GRANT ALL ON TABLE "public"."languages_master" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."languages_master_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."languages_master_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."languages_master_id_seq" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."lifestyle" TO "anon";
 GRANT ALL ON TABLE "public"."lifestyle" TO "authenticated";
 GRANT ALL ON TABLE "public"."lifestyle" TO "service_role";
@@ -8022,6 +12109,12 @@ GRANT ALL ON TABLE "public"."lifestyle" TO "service_role";
 GRANT ALL ON TABLE "public"."match_requests" TO "anon";
 GRANT ALL ON TABLE "public"."match_requests" TO "authenticated";
 GRANT ALL ON TABLE "public"."match_requests" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."message_reads" TO "anon";
+GRANT ALL ON TABLE "public"."message_reads" TO "authenticated";
+GRANT ALL ON TABLE "public"."message_reads" TO "service_role";
 
 
 
@@ -8043,9 +12136,9 @@ GRANT ALL ON TABLE "public"."user_hobbies" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."user_modes" TO "anon";
-GRANT ALL ON TABLE "public"."user_modes" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_modes" TO "service_role";
+GRANT ALL ON TABLE "public"."user_languages" TO "anon";
+GRANT ALL ON TABLE "public"."user_languages" TO "authenticated";
+GRANT ALL ON TABLE "public"."user_languages" TO "service_role";
 
 
 

@@ -50,11 +50,11 @@ alter table "public"."frames" add column "media_kind" media_type not null defaul
 
 alter table "public"."frames" add column "media_url" text not null;
 
-alter table "public"."match_requests" alter column "status" set default 'pending'::match_status_enum;
+--alter table "public"."match_requests" alter column "status" set default 'pending'::match_status_enum;
 
-alter table "public"."match_requests" alter column "status" set data type match_status_enum using "status"::text::match_status_enum;
+--alter table "public"."match_requests" alter column "status" set data type match_status_enum using "status"::text::match_status_enum;
 
-drop type "public"."match_status_enum__old_version_to_be_dropped";
+--drop type "public"."match_status_enum__old_version_to_be_dropped";
 
 CREATE UNIQUE INDEX events_pkey ON public.events USING btree (id);
 
@@ -135,7 +135,7 @@ END;
 $function$
 ;
 
-create type "public"."geometry_dump" as ("path" integer[], "geom" geometry);
+--create type "public"."geometry_dump" as ("path" integer[], "geom" geometry);
 
 CREATE OR REPLACE FUNCTION public.get_all_events_with_coordinates()
  RETURNS TABLE(id uuid, host_id uuid, event_name text, category event_category_enum, event_description text, location_name text, time_start timestamp with time zone, time_end timestamp with time zone, capacity integer, gender_allowed gender_filter_enum, age_min integer, age_max integer, status event_status_enum, created_at timestamp with time zone, updated_at timestamp with time zone, latitude double precision, longitude double precision)
@@ -354,7 +354,7 @@ END;
 $function$
 ;
 
-create type "public"."valid_detail" as ("valid" boolean, "reason" character varying, "location" geometry);
+--create type "public"."valid_detail" as ("valid" boolean, "reason" character varying, "location" geometry);
 
 CREATE OR REPLACE FUNCTION public.validate_event_description_word_count()
  RETURNS trigger
@@ -780,45 +780,45 @@ to public
 using (((auth.uid() IS NOT NULL) AND (status = 'active'::event_status_enum)));
 
 
-create policy "match_requests: create request"
-on "public"."match_requests"
-as permissive
-for insert
-to authenticated
-with check (((requester_id = auth.uid()) AND (requester_id <> target_id) AND (status = 'pending'::match_status_enum)));
+--create policy "match_requests: create request"
+--on "public"."match_requests"
+--as permissive
+--for insert
+--to authenticated
+--with check (((requester_id = auth.uid()) AND (requester_id <> target_id) AND (status = 'pending'::match_status_enum)));
 
 
-create policy "match_requests: requester cancel"
-on "public"."match_requests"
-as permissive
-for delete
-to authenticated
-using (((auth.uid() = requester_id) AND (status = 'pending'::match_status_enum)));
+--create policy "match_requests: requester cancel"
+--on "public"."match_requests"
+--as permissive
+--for delete
+--to authenticated
+--using (((auth.uid() = requester_id) AND (status = 'pending'::match_status_enum)));
 
 
-create policy "match_requests: respond"
-on "public"."match_requests"
-as permissive
-for update
-to authenticated
-using (((target_id = auth.uid()) AND (status = 'pending'::match_status_enum)))
-with check (((target_id = auth.uid()) AND (status = ANY (ARRAY['accepted'::match_status_enum, 'rejected'::match_status_enum]))));
+--create policy "match_requests: respond"
+--on "public"."match_requests"
+--as permissive
+--for update
+--to authenticated
+--using (((target_id = auth.uid()) AND (status = 'pending'::match_status_enum)))
+--with check (((target_id = auth.uid()) AND (status = ANY (ARRAY['accepted'::match_status_enum, 'rejected'::match_status_enum]))));
 
 
-create policy "frames: select current via preview"
-on "public"."frames"
-as permissive
-for select
-to authenticated
-using (((auth.uid() = user_id) AND (expires_at > now())));
+--create policy "frames: select current via preview"
+--on "public"."frames"
+--as permissive
+--for select
+--to authenticated
+--using (((auth.uid() = user_id) AND (expires_at > now())));
 
 
-create policy "frames: select history via full"
-on "public"."frames"
-as permissive
-for select
-to authenticated
-using (((auth.uid() = user_id) AND (expires_at <= now())));
+--create policy "frames: select history via full"
+--on "public"."frames"
+--as permissive
+--for select
+--to authenticated
+--using (((auth.uid() = user_id) AND (expires_at <= now())));
 
 
 CREATE TRIGGER check_event_description_word_count BEFORE INSERT OR UPDATE ON public.events FOR EACH ROW EXECUTE FUNCTION validate_event_description_word_count();
